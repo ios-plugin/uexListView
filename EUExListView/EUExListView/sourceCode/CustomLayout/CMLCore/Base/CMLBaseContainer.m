@@ -71,4 +71,16 @@
         }
     }
 }
+-(UIView*)makeInnerView{
+    UIView *innerView =[[UIView alloc]init];
+    innerView.userInteractionEnabled=YES;
+    if(self.childrenViewControllers){
+        for(int i=0;i<[self.childrenViewControllers count];i++){
+            [innerView addSubview:self.childrenViewControllers[i].view];
+
+        }
+    }
+    
+    return innerView;
+}
 @end

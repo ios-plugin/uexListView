@@ -16,6 +16,27 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    @weakify(self);
+    CMLTextViewModel *textModel=self.model;
+    [[[[RACSignal combineLatest:@[RACObserve(textModel, text),RACObserve(textModel, textColor),RACObserve(textModel, textSize),RACObserve(textModel, maxLines)]]distinctUntilChanged]
+      deliverOn:[RACScheduler scheduler]]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         [self addAChange];
+         UILabel *innerView=(UILabel *)self.innerView;
+         CML_ASYNC_DO_IN_MAIN_QUEUE(^{
+             [innerView setText:textModel.text];
+             [innerView setTextColor:textModel.textColor];
+             [innerView setNumberOfLines:textModel.maxLines];
+             if(textModel.textSize){
+                 [innerView setFont:[UIFont systemFontOfSize:textModel.textSize]];
+             }
+             [self finishAChange];
+         });
+         
+         
+     }];
+
     // Do any additional setup after loading the view.
 }
 

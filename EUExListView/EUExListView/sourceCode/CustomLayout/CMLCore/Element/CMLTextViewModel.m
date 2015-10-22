@@ -9,5 +9,15 @@
 #import "CMLTextViewModel.h"
 
 @implementation CMLTextViewModel
-
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.maxLines=1;
+        self.textColor=[UIColor blackColor];
+        self.textSize=0;
+        self.text=@"";
+    }
+    return self;
+}
 @end

@@ -9,5 +9,13 @@
 #import "CMLImageViewModel.h"
 
 @implementation CMLImageViewModel
-
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.scaleType=CMLImageScaleUndefined;
+        self.webCacheOptions=1;
+    }
+    return self;
+}
 @end

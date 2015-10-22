@@ -7,7 +7,7 @@
 //
 
 #import "CMLBaseViewController.h"
-
+#import "CMLImageViewModel.h"
 @interface CMLImageViewController : CMLBaseViewController
 
 @end

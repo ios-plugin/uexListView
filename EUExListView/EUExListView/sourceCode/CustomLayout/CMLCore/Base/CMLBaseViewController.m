@@ -62,7 +62,7 @@
     if(self){
         self.model=model;
         self.father=father;
-        self.innerView=[self makeInnerView];
+        
     }
     return self;
 }
@@ -75,7 +75,8 @@
     view.backgroundColor=[UIColor clearColor];
     view.userInteractionEnabled = YES;
     self.view=view;
-    
+
+    self.innerView=[self makeInnerView];
     [self.view addSubview:self.innerView];
 }
 - (void)viewDidLoad {
