@@ -1,0 +1,6 @@
+framework module KVOMutableArray {
+  umbrella header "KVOMutableArray.h"
+
+  export *
+  module * { export * }
+}

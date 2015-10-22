@@ -51,7 +51,7 @@
         h = [EUtility screenHeight];
     }
     
-    self.tableView = [[[PullTableView alloc] initWithFrame:CGRectMake(x, y, w, h) style:UITableViewStylePlain] autorelease];
+    self.tableView = [[PullTableView alloc] initWithFrame:CGRectMake(x, y, w, h) style:UITableViewStylePlain];
     [[NSNotificationCenter defaultCenter]addObserver:self
                                             selector:@selector(ontPullRefreshHeaderListener:)
                                                 name:@"ontPullRefreshHeaderListener"
@@ -348,7 +348,7 @@
             NSString *title = [[self.leftOptionBtnArr objectAtIndex:i]objectForKey:@"text"];
             float titleSize = [[[self.leftOptionBtnArr objectAtIndex:i]objectForKey:@"textSize"] floatValue];
             
-            [leftUtilityButtons addUtilityButtonWithColor:[EUtility ColorFromString:colorStr] title:title titleSize:[UIFont fontWithName:nil size:titleSize] bgColor:[EUtility ColorFromString:bgColorStr]];
+            [leftUtilityButtons addUtilityButtonWithColor:[EUtility ColorFromString:colorStr] title:title titleSize:[UIFont systemFontOfSize:titleSize] bgColor:[EUtility ColorFromString:bgColorStr]];
         }
         
         for (int i = (int)self.rightOptionBtnArr.count-1; i >= 0; i--) {
@@ -358,7 +358,7 @@
             NSString *title = [[self.rightOptionBtnArr objectAtIndex:i]objectForKey:@"text"];
             float titleSize = [[[self.rightOptionBtnArr objectAtIndex:i]objectForKey:@"textSize"] floatValue];
             
-            [rightUtilityButtons addUtilityButtonWithColor:[EUtility ColorFromString:colorStr] title:title titleSize:[UIFont fontWithName:nil size:titleSize] bgColor:[EUtility ColorFromString:bgColorStr]];
+            [rightUtilityButtons addUtilityButtonWithColor:[EUtility ColorFromString:colorStr] title:title titleSize:[UIFont systemFontOfSize:titleSize] bgColor:[EUtility ColorFromString:bgColorStr]];
         }
         if (self.setItemSwipeEnabled == 1) {
             cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
@@ -396,7 +396,7 @@
         NSString *selectedBackgroundColor = [dataItemDict objectForKey:@"selectedBackgroundColor"];
         [view setBackgroundColor:[EUtility ColorFromString:selectedBackgroundColor]];
         cell.selectedBackgroundView = view;
-        [view release];
+
     }
     NSString *imageViewPath = [dataItemDict objectForKey:@"image"];
     NSString *placeholderImgPath = [dataItemDict objectForKey:@"placeholderImg"];
@@ -422,7 +422,7 @@
     }
     
     if([imageViewPath hasPrefix:@"http://"]) {
-        [cell.imageView setImageWithURL:[NSURL URLWithString:imageViewPath] placeholderImage:placeholderImageView];
+        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:imageViewPath] placeholderImage:placeholderImageView];
         
     } else {
         UIImage *imageview = [UIImage imageWithData:[self getImageDataByPath:imageViewPath]];
@@ -438,8 +438,8 @@
     cell.detailTextLabel.numberOfLines = -1;
     [cell.textLabel setTextColor:[EUtility ColorFromString:titleColor]];
     [cell.detailTextLabel setTextColor:[EUtility ColorFromString:subtitleColor]];
-    [cell.textLabel.text sizeWithFont:[UIFont fontWithName:nil size:titleSize]];
-    [cell.detailTextLabel.text sizeWithFont:[UIFont fontWithName:nil size:subtitleSize]];
+    [cell.textLabel.text sizeWithFont:[UIFont systemFontOfSize:titleSize]];
+    [cell.detailTextLabel.text sizeWithFont:[UIFont systemFontOfSize:subtitleSize]];
     [cell SWSetBackgroundColor:[EUtility ColorFromString:backgroundColor]];
     self.tableView.backgroundColor = [EUtility ColorFromString:backgroundColor];
     return cell;
@@ -470,7 +470,7 @@
     //[self jsSuccessWithName:@"uexListView.onItemClick" opId:0 dataType:2 intData:row];
     
     NSString *jsString = [NSString stringWithFormat:@"uexListView.onItemClick(\"%d\");",row];
-    [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
+    [EUtility brwView:self.meBrwView evaluateScript:jsString];
     
 }
 
@@ -491,18 +491,18 @@
 - (void)swippableTableViewCell:(SWTableViewCell *)cell didTriggerLeftUtilityButtonWithIndex:(NSInteger)index {
     
     NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
-    NSString *jsString = [NSString stringWithFormat:@"uexListView.onLeftOptionButtonInItem(\"%d\",\"%d\");",cellIndexPath.row,index];
+    NSString *jsString = [NSString stringWithFormat:@"uexListView.onLeftOptionButtonInItem(\"%ld\",\"%ld\");",(long)cellIndexPath.row,(long)index];
     
-    [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
-    
+    [EUtility brwView:self.meBrwView evaluateScript:jsString];
+
 }
 
 - (void)swippableTableViewCell:(SWTableViewCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
     
     NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
-    NSString *jsString = [NSString stringWithFormat:@"uexListView.onRightOptionButtonInItem(\"%d\",\"%d\");",cellIndexPath.row,index];
+    NSString *jsString = [NSString stringWithFormat:@"uexListView.onRightOptionButtonInItem(\"%ld\",\"%ld\");",(long)cellIndexPath.row,(long)index];
     
-    [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
+    [EUtility brwView:self.meBrwView evaluateScript:jsString];
 }
 
 #pragma mark - PullTableViewDelegate
@@ -533,7 +533,6 @@
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ontPullRefreshHeaderListener" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ontPullRefreshFooterListener" object:nil];
-    [super dealloc];
 }
 
 -(void)clean {
