@@ -12,7 +12,7 @@
 #import "CMLTextViewController.h"
 #import "CMLImageViewController.h"
 #import "CMLButtonViewController.h"
-
+#import <KVOMutableArray/KVOMutableArray+ReactiveCocoaSupport.h>
 @interface CMLBaseViewController()
 
 @end
@@ -118,6 +118,104 @@
     
 
 }
+
+- (void)viewWillAppear:(BOOL)animated{
+    @weakify(self);
+    [[[self.model.padding.edgeDifferenceDidChangeSignal distinctUntilChanged]
+      deliverOn:[RACScheduler scheduler]]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         [self addAChange];
+         
+         CML_ASYNC_DO_IN_MAIN_QUEUE(^{
+             [self layoutPadding];
+             [self finishAChange];
+         });
+         
+     }];
+    
+    
+    [[[RACSignal combineLatest:@[RACObserve(self.model, width),RACObserve(self.model, height),RACObserve(self.model, weight)]]
+      deliverOn:[RACScheduler scheduler]]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         [self addAChange];
+         CML_ASYNC_DO_IN_MAIN_QUEUE(^{
+             if(self.father && self.father.model.type == CMLViewModelLinearContainerModel){
+                 CMLLinearContainerModel *linearModel=self.father.model;
+                 switch (linearModel.orientation) {
+                     case CMLLinearContainerOrientationVertical: {
+                         [self layoutWidth];
+                         [self layoutHeightByWeight];
+                         break;
+                     }
+                     case CMLLinearContainerOrientationHorizental: {
+                         [self layoutWidthByWeight];
+                         [self layoutHeight];
+                         break;
+                     }
+
+                 }
+             }else{
+                 [self layoutWidth];
+                 [self layoutHeight];
+             }
+             [self finishAChange];
+             
+         });
+     }];
+    if(!self.father){
+        [[self.model.margin.edgeDifferenceDidChangeSignal
+          deliverOn:[RACScheduler scheduler]] subscribeNext:^(id x) {
+            [self addAChange];
+            CML_ASYNC_DO_IN_MAIN_QUEUE(^{
+                [self layoutMargin];
+                
+            });
+        }];
+
+        return;
+    }
+    if(self.father.model.type == CMLViewModelLinearContainerModel){
+        [[[RACSignal merge:@[self.model.gravityInfo.xAlign.aligmentDidChangeSignal,self.model.gravityInfo.yAlign.aligmentDidChangeSignal]]
+         deliverOn:[RACScheduler scheduler]]
+         subscribeNext:^(id x) {
+             [self addAChange];
+             CML_ASYNC_DO_IN_MAIN_QUEUE(^{
+                 [self layoutMarginWithGravityInLinearContainer];
+             });
+        }];
+    }
+    if(self.father.model.type ==CMLViewModelRelativeContainerModel){
+        [[[RACSignal merge:@[self.model.floatInfo.xAlign.aligmentDidChangeSignal,self.model.floatInfo.yAlign.aligmentDidChangeSignal]]
+          deliverOn:[RACScheduler scheduler]]
+         subscribeNext:^(id x) {
+             [self addAChange];
+             CML_ASYNC_DO_IN_MAIN_QUEUE(^{
+                 [self layoutMarginWithGravityInLinearContainer];
+             });
+         }];
+        [[self.model.relations.changeSignal filter:^BOOL(id value) {
+#warning TODO
+            return YES;
+        }]subscribeNext:^(id x) {
+            @strongify(self);
+            [self addAChange];
+            
+            CML_ASYNC_DO_IN_MAIN_QUEUE(^{
+                [self layoutRelationInRelativeContainer];
+
+                [self finishAChange];
+            });
+
+        }];
+    }
+
+}
+
+
+
+
 -(CMLBaseContainer *)getRoot{
     if(self.father){
         return [self.father getRoot];
@@ -137,6 +235,9 @@
     //子类必须覆写此方法！
     return nil;
 }
+
+
+
 
 #pragma mark - layout method
 
