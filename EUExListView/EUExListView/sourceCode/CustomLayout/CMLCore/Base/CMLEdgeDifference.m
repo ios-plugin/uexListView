@@ -47,9 +47,11 @@ self.bottom=[attributes[b] floatValue];\
 
 
 -(RACSignal *)edgeDifferenceDidChangeSignal{
-    if(_edgeDifferenceDidChangeSignal){
+    if(!_edgeDifferenceDidChangeSignal){
         @weakify(self);
-        _edgeDifferenceDidChangeSignal=[[RACSignal combineLatest:@[[RACObserve(self, left) distinctUntilChanged],[RACObserve(self, top) distinctUntilChanged],[RACObserve(self, right) distinctUntilChanged],[RACObserve(self, bottom) distinctUntilChanged]]]flattenMap:^RACStream *(id value) {
+        _edgeDifferenceDidChangeSignal=[[RACSignal combineLatest:@[[RACObserve(self, left) distinctUntilChanged],[RACObserve(self, top) distinctUntilChanged],[RACObserve(self, right) distinctUntilChanged],[RACObserve(self, bottom) distinctUntilChanged]]]
+                                        flattenMap:^RACStream *(id value) {
+
             return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
                 @strongify(self);
                 [subscriber sendNext:self];

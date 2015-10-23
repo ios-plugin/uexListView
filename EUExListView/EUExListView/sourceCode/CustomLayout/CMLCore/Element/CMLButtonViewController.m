@@ -16,6 +16,27 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    @weakify(self);
+    CMLButtonViewModel *buttonModel=self.model;
+    [[[[RACSignal combineLatest:@[RACObserve(buttonModel, text),RACObserve(buttonModel, textColor),RACObserve(buttonModel, textSize),RACObserve(buttonModel, maxLines)]]distinctUntilChanged]
+      deliverOn:[RACScheduler scheduler]]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         [self addAChange];
+         UILabel *innerView=(UILabel *)self.innerView;
+         CML_ASYNC_DO_IN_MAIN_QUEUE(^{
+             [innerView setText:buttonModel.text];
+             [innerView setTextColor:buttonModel.textColor];
+             [innerView setNumberOfLines:buttonModel.maxLines];
+             if(buttonModel.textSize){
+                 [innerView setFont:[UIFont systemFontOfSize:buttonModel.textSize]];
+             }
+             [self finishAChange];
+         });
+         
+         
+     }];
     // Do any additional setup after loading the view.
 }
 
@@ -24,6 +45,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+
+-(UIView *)makeInnerView{
+    UIButton *button =[UIButton buttonWithType:UIButtonTypeCustom];
+    button.userInteractionEnabled=YES;
+    return button;
+}
 /*
 #pragma mark - Navigation
 

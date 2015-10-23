@@ -45,6 +45,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(UIView *)makeInnerView{
+    UILabel *label=[[UILabel alloc]init];
+    label.userInteractionEnabled=YES;
+    return label;
+}
 /*
 #pragma mark - Navigation
 

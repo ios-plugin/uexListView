@@ -10,6 +10,11 @@
 #import "EUtility.h"
 #import "PullTableView.h"
 #import "SDImageCache.h"
+#import "CeriXMLLayout.h"
+
+@interface EUExListView()<CeriXMLLayoutDelegate>
+
+@end
 @implementation EUExListView{
     
     int row;
@@ -294,6 +299,27 @@
     [self.tableView reloadData];
     
 }
+
+
+
+-(void)test:(NSMutableArray *)inArguments{
+    ONOXMLDocument *rootDocument=[ONOXMLDocument XMLDocumentWithString:[NSString stringWithContentsOfFile:[self absPath:@"res://testCustomLayout.xml"] encoding:NSUTF8StringEncoding error:NULL] encoding:NSUTF8StringEncoding error:NULL];
+    if(!rootDocument){
+        return;
+    }
+    CMLBaseViewModel *rootModel=[CeriXMLLayout modelWithXMLData:rootDocument.rootElement];
+    __kindof CMLBaseContainer * CMLRoot=[CeriXMLLayout CMLRootViewControllerWithModel:rootModel delegate:self];
+    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, 200, 300 ,200)];
+    [bgView setBackgroundColor:[UIColor redColor]];
+    [bgView addSubview:CMLRoot.view];
+    [bgView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(CMLRoot.view);
+    }];
+    NSArray *subvs=[CMLRoot.innerView subviews];
+    [EUtility brwView:self.meBrwView addSubview:bgView];
+}
+
+
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;

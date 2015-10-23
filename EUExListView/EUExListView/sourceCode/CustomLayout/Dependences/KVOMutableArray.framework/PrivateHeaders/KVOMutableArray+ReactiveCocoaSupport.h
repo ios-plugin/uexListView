@@ -6,7 +6,7 @@
 //
 //
 
-#import "KVOMutableArray.h"
+#import <KVOMutableArray/KVOMutableArray.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
 @interface KVOMutableArray (ReactiveCocoaSupport)

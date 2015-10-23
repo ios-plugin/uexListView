@@ -13,8 +13,8 @@
 
 @optional
 
--(void)CMLRootViewControllerDidChangeUI:(CMLBaseContainer*)rootViewController;
-
+-(void)CMLRootViewControllerDidChangeUI:(__kindof CMLBaseContainer*)rootViewController;
+-(void)CMLViewControllerDidTriggerSingleClickEvent:(__kindof CMLBaseViewController *)viewController;
 @end
 
 
@@ -29,7 +29,7 @@
 @property (nonatomic,assign) BOOL                  isRootViewController;
 @property (nonatomic,strong) NSMutableDictionary   *namedViewControllers;
 @property (nonatomic,weak  ) id<CeriXMLLayoutDelegate> delegate;
-
+-(void)handleSingleClickEvent:(__kindof CMLBaseViewController *)viewController;
 
 
 

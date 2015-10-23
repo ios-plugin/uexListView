@@ -7,7 +7,7 @@
 //
 
 #import "CMLContainerModel.h"
-
+#import "CeriXMLLayout.h"
 @implementation CMLContainerModel
 - (instancetype)init
 {
@@ -16,6 +16,7 @@
         self.isRootModel=NO;
         self.childrenModels=[NSMutableArray array];
         self.changeCount=0;
+        
     }
     return self;
 }
@@ -23,5 +24,26 @@
 -(void)becomeRoot{
     self.isRootModel=YES;
     self.mappingCenter=[[CMLMappingCenter alloc]init];
+}
+
+-(BOOL)setupWithXMLData:(ONOXMLElement *)XMLData{
+    if(![super setupWithXMLData:XMLData]){
+        return NO;
+    }
+    NSArray * xmlChildren =[XMLData children];
+    for(int i=0;i<[xmlChildren count];i++){
+        if([[xmlChildren objectAtIndex:i] isKindOfClass:[ONOXMLElement class]]){
+            if(!self.childrenModels){
+                self.childrenModels=[NSMutableArray array];
+            }
+            __kindof CMLBaseViewModel *model =[CeriXMLLayout modelWithXMLData:xmlChildren[i]];
+            if(model){
+                [self.childrenModels addObject:model];
+            }
+
+        }
+    }
+
+    return YES;
 }
 @end

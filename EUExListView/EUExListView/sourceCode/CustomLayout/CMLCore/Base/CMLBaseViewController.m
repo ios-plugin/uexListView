@@ -14,7 +14,7 @@
 #import "CMLButtonViewController.h"
 #import <KVOMutableArray/KVOMutableArray+ReactiveCocoaSupport.h>
 @interface CMLBaseViewController()
-
+@property (nonatomic,strong) UITapGestureRecognizer *singleTagGestureRecognizer;
 @end
 
 
@@ -22,47 +22,14 @@
 @implementation CMLBaseViewController
 
 
-+(instancetype)CMLViewControllerWithModel:(__kindof CMLBaseViewModel *)model father:(__kindof CMLBaseContainer *)father{
-    if(!model){
-        return nil;
-    }
-    switch (model.type) {
-        case CMLViewModelUndefined: {
-            return nil;
-            break;
-        }
-        case CMLViewModelLinearContainerModel: {
-            return [[CMLLinearContainer alloc]initWithModel:model father:father];
-            break;
-        }
-        case CMLViewModelRelativeContainerModel: {
-            return [[CMLRelativeContainer alloc]initWithModel:model father:father];
-            break;
-        }
-        case CMLViewModelImageViewModel: {
-            return [[CMLImageViewController alloc]initWithModel:model father:father];
-            break;
-        }
-        case CMLViewModelButtonViewModel: {
-            return [[CMLBaseViewController alloc]initWithModel:model father:father];
-            break;
-        }
-        case CMLViewModelTextViewModel: {
-            return [[CMLTextViewController alloc]initWithModel:model father:father];
-            break;
-        }
 
-    }
-
-
-}
 
 -(instancetype)initWithModel:(CMLBaseViewModel *)model father:(CMLBaseContainer *)father{
     self=[super init];
     if(self){
         self.model=model;
         self.father=father;
-        
+        self.innerView=[self makeInnerView];
     }
     return self;
 }
@@ -76,7 +43,7 @@
     view.userInteractionEnabled = YES;
     self.view=view;
 
-    self.innerView=[self makeInnerView];
+    
     [self.view addSubview:self.innerView];
 }
 - (void)viewDidLoad {
@@ -97,6 +64,7 @@
      subscribeNext:^(NSString *bgString) {
          @strongify(self);
          [self addAChange];
+
          __kindof CMLContainerModel *rootModel=[self getRoot].model;
          NSString *imageFilePath=[rootModel.mappingCenter mappingFilePath:bgString];
          
@@ -105,19 +73,40 @@
              CML_ASYNC_DO_IN_MAIN_QUEUE(^{
                  [((UIImageView *)self.view) setImage:bgImage];
                  [self finishAChange];
+
              });
          }else{
              UIColor *bgColor =[UIColor CML_ColorFromHtmlString:bgString];
              CML_ASYNC_DO_IN_MAIN_QUEUE(^{
                  [self.view setBackgroundColor:bgColor];
                  [self finishAChange];
+  
              });
              
          }
      }];
+    [[[[RACObserve(self.model, onSingleClickInfo) distinctUntilChanged]
+      filter:^BOOL(NSString * singleTapInfo) {
+          NSLog(@"%@xxxx",singleTapInfo);
+        return ([singleTapInfo length]>0);
+    }]
+     take:1]
+     subscribeNext:^(id x) {
+         self.singleTagGestureRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(singleTapHandler:)];
+         [self.view addGestureRecognizer:self.singleTagGestureRecognizer];
+         
+     }];
+    
+    
     
     
 
+}
+
+-(void)singleTapHandler:(UIGestureRecognizer *)gestureRecognizer{
+    if(gestureRecognizer ==self.singleTagGestureRecognizer){
+        [self.getRoot handleSingleClickEvent:self];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -127,10 +116,11 @@
      subscribeNext:^(id x) {
          @strongify(self);
          [self addAChange];
-         
+
          CML_ASYNC_DO_IN_MAIN_QUEUE(^{
              [self layoutPadding];
              [self finishAChange];
+
          });
          
      }];
@@ -162,43 +152,49 @@
                  [self layoutHeight];
              }
              [self finishAChange];
+
              
          });
      }];
     if(!self.father){
+        //root 没有父容器
         [[self.model.margin.edgeDifferenceDidChangeSignal
           deliverOn:[RACScheduler scheduler]] subscribeNext:^(id x) {
             [self addAChange];
             CML_ASYNC_DO_IN_MAIN_QUEUE(^{
                 [self layoutMargin];
-                
+                [self finishAChange];
             });
         }];
 
         return;
     }
     if(self.father.model.type == CMLViewModelLinearContainerModel){
+        //父容器是线性布局
         [[[RACSignal merge:@[self.model.gravityInfo.xAlign.aligmentDidChangeSignal,self.model.gravityInfo.yAlign.aligmentDidChangeSignal]]
          deliverOn:[RACScheduler scheduler]]
          subscribeNext:^(id x) {
              [self addAChange];
              CML_ASYNC_DO_IN_MAIN_QUEUE(^{
                  [self layoutMarginWithGravityInLinearContainer];
+                 [self finishAChange];
              });
         }];
     }
     if(self.father.model.type ==CMLViewModelRelativeContainerModel){
+        //父容器是相对布局
         [[[RACSignal merge:@[self.model.floatInfo.xAlign.aligmentDidChangeSignal,self.model.floatInfo.yAlign.aligmentDidChangeSignal]]
           deliverOn:[RACScheduler scheduler]]
          subscribeNext:^(id x) {
              [self addAChange];
              CML_ASYNC_DO_IN_MAIN_QUEUE(^{
                  [self layoutMarginWithGravityInLinearContainer];
+                 [self finishAChange];
              });
          }];
-        [[self.model.relations.changeSignal filter:^BOOL(id value) {
-#warning TODO
-            return YES;
+        [[self.model.relations.changeSignal filter:^BOOL(RACTuple* t) {
+            NSDictionary *change= t.second;
+            return ([change[NSKeyValueChangeKindKey] integerValue]!=NSKeyValueChangeRemoval);
         }]subscribeNext:^(id x) {
             @strongify(self);
             [self addAChange];
@@ -232,7 +228,7 @@
 -(void)finishAChange{
     [[self getRoot] finishAChange];
 }
--(UIView*)makeInnerView{
+-(__kindof UIView*)makeInnerView{
     //子类必须覆写此方法！
     return nil;
 }
@@ -270,7 +266,19 @@
         return;
     }
     CMLLinearContainer *linearFather=(CMLLinearContainer *)self.father;
-    NSUInteger index =[linearFather.weightedChildrenViewControllers indexOfObject:self];
+    NSInteger index=-1;
+    for(int i=0;i<linearFather.weightedChildrenViewControllers.count;i++){
+        if (linearFather.weightedChildrenViewControllers[i]==self) {
+            index=i;
+            
+            break;
+        }
+    }
+    
+    if(index < 0){
+        return;
+    }
+    //NSUInteger index =[linearFather.weightedChildrenViewControllers indexOfObject:self];
     if(index < [linearFather.weightedChildrenViewControllers count]-1){
         CMLBaseViewController *nextViewController=(CMLBaseViewController *)linearFather.weightedChildrenViewControllers[index+1];
         @weakify(self,nextViewController);
@@ -289,6 +297,7 @@
             make.width.equalTo(self.father.innerView.mas_width);
         }else if (self.model.width>=0){
             make.width.equalTo(@(self.model.width));
+            
         }
     }];
 }
@@ -299,7 +308,18 @@
         return;
     }
     CMLLinearContainer *linearFather=(CMLLinearContainer *)self.father;
-    NSUInteger index =[linearFather.weightedChildrenViewControllers indexOfObject:self];
+    NSInteger index=-1;
+    for(int i=0;i<linearFather.weightedChildrenViewControllers.count;i++){
+        if (linearFather.weightedChildrenViewControllers[i]==self) {
+            index=i;
+            
+            break;
+        }
+    }
+    
+    if(index < 0){
+        return;
+    }
     if(index < [linearFather.weightedChildrenViewControllers count]-1){
         CMLBaseViewController *nextViewController=linearFather.weightedChildrenViewControllers[index+1];
         @weakify(self,nextViewController);
@@ -333,8 +353,20 @@
     if(!self.father||self.father.model.type != CMLViewModelLinearContainerModel){
         return;
     }
-    NSUInteger index = [self.father.childViewControllers indexOfObject:self];
     
+
+    NSInteger index=-1;
+    for(int i=0;i<self.father.childrenViewControllers.count;i++){
+        if (self.father.childrenViewControllers[i]==self) {
+            index=i;
+
+            break;
+        }
+    }
+    
+    if(index < 0){
+        return;
+    }
     CMLLinearContainer *fatherLinearContainer=self.father;
     CMLLinearContainerModel *fatherModel=fatherLinearContainer.model;
     @weakify(self,fatherModel);

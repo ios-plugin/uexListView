@@ -9,5 +9,8 @@
 #import "CMLBaseViewModel.h"
 
 @interface CMLButtonViewModel : CMLBaseViewModel
-
+@property (nonatomic,copy  ) NSString  *text;
+@property (nonatomic,strong) UIColor   *textColor;
+@property (nonatomic,assign) CGFloat   textSize;
+@property (nonatomic,assign) NSInteger maxLines;
 @end

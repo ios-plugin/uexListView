@@ -7,12 +7,21 @@
 //
 
 #import "CMLBaseViewModel.h"
-
+#import "CMLLinearContainerModel.h"
+#import "CMLRelativeContainerModel.h"
+#import "CMLTextViewModel.h"
+#import "CMLImageViewModel.h"
+#import "CMLButtonViewModel.h"
 @implementation CMLBaseViewModel
+
+
+
+
 - (instancetype)init
 {
     self = [super init];
     if (self) {
+        self.type=CMLViewModelUndefined;
         self.identifier = @"";
         self.width  = -2;
         self.height = -2;
@@ -24,14 +33,17 @@
         self.relations = [KVOMutableArray new];
         self.gravityInfo=[[CMLAlignmentInfo alloc]init];
         self.floatInfo=[[CMLAlignmentInfo alloc]init];
+        
+        self.onSingleClickInfo=@"";
+        
 
     }
     return self;
 }
 
--(void)setupWithXMLData:(ONOXMLElement *)XMLData{
+-(BOOL)setupWithXMLData:(ONOXMLElement *)XMLData{
     if(!XMLData){
-        return;
+        return NO;
     }
     if(XMLData[CMLPropertyWidth]){
         self.width=[XMLData[CMLPropertyWidth] floatValue];
@@ -71,7 +83,10 @@
     if(XMLData[CMLPropertyId]){
         self.identifier=[[XMLData[CMLPropertyId] CML_toString] CML_CLSTR];
     }
-    
+    if(XMLData[CMLPropertyOnClick]){
+        self.onSingleClickInfo=[XMLData[CMLPropertyOnClick] CML_CLSTR];
+    }
+    return YES;
 
 
 

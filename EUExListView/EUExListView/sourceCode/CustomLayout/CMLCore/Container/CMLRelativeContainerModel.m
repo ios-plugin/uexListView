@@ -9,5 +9,12 @@
 #import "CMLRelativeContainerModel.h"
 
 @implementation CMLRelativeContainerModel
-
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.type=CMLViewModelRelativeContainerModel;
+    }
+    return self;
+}
 @end

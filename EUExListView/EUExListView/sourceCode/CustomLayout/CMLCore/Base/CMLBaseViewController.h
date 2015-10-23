@@ -25,7 +25,7 @@
 @property (nonatomic,weak)__kindof CMLBaseContainer *father;
 
 
-+(instancetype)CMLViewControllerWithModel:(__kindof CMLBaseViewModel *)model father:(__kindof CMLBaseContainer *)father;
+
 
 -(instancetype)initWithModel:(__kindof CMLBaseViewModel *)model father:(__kindof CMLBaseContainer *)father;
 
@@ -37,4 +37,5 @@
 
 -(void)addAChange;
 -(void)finishAChange;
+-(__kindof UIView*)makeInnerView;
 @end

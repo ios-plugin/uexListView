@@ -10,7 +10,7 @@
 #import "CMLAlignmentInfo.h"
 #import "CMLEdgeDifference.h"
 #import "CMLElementRelation.h"
-#import <Ono/Ono.h>
+#import "ONOXMLDocument.h"
 
 typedef NS_ENUM(NSInteger,CMLViewModelType) {
     CMLViewModelUndefined,
@@ -42,7 +42,10 @@ typedef NS_ENUM(NSInteger,CMLViewModelType) {
 @property (nonatomic,strong) KVOMutableArray   *relations;
 
 
+@property (nonatomic,strong) NSString *onSingleClickInfo;
 
--(void)setupWithXMLData:(ONOXMLElement *)XMLData;
+
+
+- (BOOL)setupWithXMLData:(ONOXMLElement *)XMLData;
 
 @end

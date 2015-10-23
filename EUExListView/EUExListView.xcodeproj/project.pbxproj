@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		421E74101BD8766800BD40BF /* Masonry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 421E740C1BD8766800BD40BF /* Masonry.framework */; };
 		421E74111BD8766800BD40BF /* MJRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 421E740D1BD8766800BD40BF /* MJRefresh.framework */; };
-		421E74121BD8766800BD40BF /* Ono.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 421E740E1BD8766800BD40BF /* Ono.framework */; };
 		421E74131BD8766800BD40BF /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 421E740F1BD8766800BD40BF /* ReactiveCocoa.framework */; };
 		421E74471BD87D5100BD40BF /* KVOMutableArray.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 421E74461BD87D5100BD40BF /* KVOMutableArray.framework */; };
 		421E745F1BD8825600BD40BF /* CMLBaseViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E745A1BD8825600BD40BF /* CMLBaseViewModel.m */; };
@@ -30,6 +29,9 @@
 		421E74961BD88D8500BD40BF /* CMLLinearContainerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E74951BD88D8500BD40BF /* CMLLinearContainerModel.m */; };
 		421E74991BD892DA00BD40BF /* CMLMappingCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E74981BD892DA00BD40BF /* CMLMappingCenter.m */; };
 		421E749C1BD8986B00BD40BF /* CMLRelativeContainerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E749B1BD8986B00BD40BF /* CMLRelativeContainerModel.m */; };
+		4246CAD11BD9D88E00042768 /* CeriXMLLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAD01BD9D88E00042768 /* CeriXMLLayout.m */; };
+		4246CAE51BDA078600042768 /* ONOXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAE41BDA078600042768 /* ONOXMLDocument.m */; };
+		4246CAE81BDA231800042768 /* CMLTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAE71BDA231800042768 /* CMLTableViewCell.m */; };
 		42F030A21BD8F65100C1890A /* CMLTextViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A11BD8F65100C1890A /* CMLTextViewModel.m */; };
 		42F030A51BD8F68700C1890A /* CMLImageViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A41BD8F68700C1890A /* CMLImageViewModel.m */; };
 		42F030A81BD8F69600C1890A /* CMLButtonViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A71BD8F69600C1890A /* CMLButtonViewModel.m */; };
@@ -76,7 +78,6 @@
 		421E74071BD874D300BD40BF /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		421E740C1BD8766800BD40BF /* Masonry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Masonry.framework; sourceTree = "<group>"; };
 		421E740D1BD8766800BD40BF /* MJRefresh.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MJRefresh.framework; sourceTree = "<group>"; };
-		421E740E1BD8766800BD40BF /* Ono.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Ono.framework; sourceTree = "<group>"; };
 		421E740F1BD8766800BD40BF /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ReactiveCocoa.framework; sourceTree = "<group>"; };
 		421E74461BD87D5100BD40BF /* KVOMutableArray.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KVOMutableArray.framework; sourceTree = "<group>"; };
 		421E74591BD8825600BD40BF /* CMLBaseViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLBaseViewModel.h; sourceTree = "<group>"; };
@@ -118,6 +119,12 @@
 		421E74981BD892DA00BD40BF /* CMLMappingCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLMappingCenter.m; sourceTree = "<group>"; };
 		421E749A1BD8986B00BD40BF /* CMLRelativeContainerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLRelativeContainerModel.h; sourceTree = "<group>"; };
 		421E749B1BD8986B00BD40BF /* CMLRelativeContainerModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLRelativeContainerModel.m; sourceTree = "<group>"; };
+		4246CACF1BD9D88E00042768 /* CeriXMLLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CeriXMLLayout.h; sourceTree = "<group>"; };
+		4246CAD01BD9D88E00042768 /* CeriXMLLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CeriXMLLayout.m; sourceTree = "<group>"; };
+		4246CAE31BDA078600042768 /* ONOXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ONOXMLDocument.h; sourceTree = "<group>"; };
+		4246CAE41BDA078600042768 /* ONOXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ONOXMLDocument.m; sourceTree = "<group>"; };
+		4246CAE61BDA231700042768 /* CMLTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLTableViewCell.h; sourceTree = "<group>"; };
+		4246CAE71BDA231800042768 /* CMLTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTableViewCell.m; sourceTree = "<group>"; };
 		42F030A01BD8F65100C1890A /* CMLTextViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLTextViewModel.h; sourceTree = "<group>"; };
 		42F030A11BD8F65100C1890A /* CMLTextViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTextViewModel.m; sourceTree = "<group>"; };
 		42F030A31BD8F68700C1890A /* CMLImageViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLImageViewModel.h; sourceTree = "<group>"; };
@@ -173,7 +180,6 @@
 				421E74471BD87D5100BD40BF /* KVOMutableArray.framework in Frameworks */,
 				421E74101BD8766800BD40BF /* Masonry.framework in Frameworks */,
 				421E74111BD8766800BD40BF /* MJRefresh.framework in Frameworks */,
-				421E74121BD8766800BD40BF /* Ono.framework in Frameworks */,
 				421E74131BD8766800BD40BF /* ReactiveCocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -222,6 +228,8 @@
 				421E74561BD8821300BD40BF /* Container */,
 				421E74571BD8821300BD40BF /* Element */,
 				421E74581BD8821300BD40BF /* Utility */,
+				4246CACF1BD9D88E00042768 /* CeriXMLLayout.h */,
+				4246CAD01BD9D88E00042768 /* CeriXMLLayout.m */,
 			);
 			path = CMLCore;
 			sourceTree = "<group>";
@@ -229,6 +237,8 @@
 		421E740A1BD8765C00BD40BF /* CMLTableView */ = {
 			isa = PBXGroup;
 			children = (
+				4246CAE61BDA231700042768 /* CMLTableViewCell.h */,
+				4246CAE71BDA231800042768 /* CMLTableViewCell.m */,
 			);
 			path = CMLTableView;
 			sourceTree = "<group>";
@@ -236,10 +246,11 @@
 		421E740B1BD8765C00BD40BF /* Dependences */ = {
 			isa = PBXGroup;
 			children = (
+				4246CAE31BDA078600042768 /* ONOXMLDocument.h */,
+				4246CAE41BDA078600042768 /* ONOXMLDocument.m */,
 				421E74461BD87D5100BD40BF /* KVOMutableArray.framework */,
 				421E740C1BD8766800BD40BF /* Masonry.framework */,
 				421E740D1BD8766800BD40BF /* MJRefresh.framework */,
-				421E740E1BD8766800BD40BF /* Ono.framework */,
 				421E740F1BD8766800BD40BF /* ReactiveCocoa.framework */,
 			);
 			path = Dependences;
@@ -517,9 +528,11 @@
 				42F030A81BD8F69600C1890A /* CMLButtonViewModel.m in Sources */,
 				421E74991BD892DA00BD40BF /* CMLMappingCenter.m in Sources */,
 				421E74611BD8825600BD40BF /* CMLUnidimensionalAlignment.m in Sources */,
+				4246CAE51BDA078600042768 /* ONOXMLDocument.m in Sources */,
 				421E74661BD882AE00BD40BF /* CMLAlignmentInfo.m in Sources */,
 				421E74721BD882FA00BD40BF /* NSObject+toString.m in Sources */,
 				421E74731BD882FA00BD40BF /* NSString+ClearString.m in Sources */,
+				4246CAE81BDA231800042768 /* CMLTableViewCell.m in Sources */,
 				421E745F1BD8825600BD40BF /* CMLBaseViewModel.m in Sources */,
 				421E74931BD88D6700BD40BF /* CMLRelativeContainer.m in Sources */,
 				421E74601BD8825600BD40BF /* CMLEdgeDifference.m in Sources */,
@@ -528,6 +541,7 @@
 				F7D5901A1A47AD6F0004D00E /* LoadMoreTableFooterView.m in Sources */,
 				421E74741BD882FA00BD40BF /* UIColor+HtmlColor.m in Sources */,
 				421E74871BD886DD00BD40BF /* CMLBaseViewController.m in Sources */,
+				4246CAD11BD9D88E00042768 /* CeriXMLLayout.m in Sources */,
 				421E74751BD882FA00BD40BF /* UIView+FindViewController.m in Sources */,
 				421E74671BD882AE00BD40BF /* CMLElementRelation.m in Sources */,
 				42F030A21BD8F65100C1890A /* CMLTextViewModel.m in Sources */,
@@ -638,6 +652,8 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = $SRCROOT/EUExListView/sourceCode/PrefixHeader.pch;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2/;
+				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = uexListView;
 				SKIP_INSTALL = YES;
@@ -658,6 +674,8 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = $SRCROOT/EUExListView/sourceCode/PrefixHeader.pch;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2/;
+				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = uexListView;
 				SKIP_INSTALL = YES;
