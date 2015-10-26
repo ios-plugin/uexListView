@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CMLTableViewCellData.h"
+
+
+
+
 
 @interface CMLTableViewCell : UITableViewCell
 
+
+
+-(void)modifyWithTableView:(__kindof UITableView *)tableView
+                      data:(CMLTableViewCellData *)data;
 @end

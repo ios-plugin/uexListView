@@ -29,9 +29,12 @@
 		421E74961BD88D8500BD40BF /* CMLLinearContainerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E74951BD88D8500BD40BF /* CMLLinearContainerModel.m */; };
 		421E74991BD892DA00BD40BF /* CMLMappingCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E74981BD892DA00BD40BF /* CMLMappingCenter.m */; };
 		421E749C1BD8986B00BD40BF /* CMLRelativeContainerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 421E749B1BD8986B00BD40BF /* CMLRelativeContainerModel.m */; };
+		422E03B31BDDC57700AA8269 /* CMLCellLongPressGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 422E03B21BDDC57700AA8269 /* CMLCellLongPressGestureRecognizer.m */; };
+		422E03B61BDDC63800AA8269 /* CMLTableViewCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 422E03B51BDDC63800AA8269 /* CMLTableViewCellData.m */; };
 		4246CAD11BD9D88E00042768 /* CeriXMLLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAD01BD9D88E00042768 /* CeriXMLLayout.m */; };
 		4246CAE51BDA078600042768 /* ONOXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAE41BDA078600042768 /* ONOXMLDocument.m */; };
 		4246CAE81BDA231800042768 /* CMLTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAE71BDA231800042768 /* CMLTableViewCell.m */; };
+		4246CAEB1BDDBF0B00042768 /* CMLCellScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAEA1BDDBF0B00042768 /* CMLCellScrollView.m */; };
 		42F030A21BD8F65100C1890A /* CMLTextViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A11BD8F65100C1890A /* CMLTextViewModel.m */; };
 		42F030A51BD8F68700C1890A /* CMLImageViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A41BD8F68700C1890A /* CMLImageViewModel.m */; };
 		42F030A81BD8F69600C1890A /* CMLButtonViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A71BD8F69600C1890A /* CMLButtonViewModel.m */; };
@@ -119,12 +122,18 @@
 		421E74981BD892DA00BD40BF /* CMLMappingCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLMappingCenter.m; sourceTree = "<group>"; };
 		421E749A1BD8986B00BD40BF /* CMLRelativeContainerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLRelativeContainerModel.h; sourceTree = "<group>"; };
 		421E749B1BD8986B00BD40BF /* CMLRelativeContainerModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLRelativeContainerModel.m; sourceTree = "<group>"; };
+		422E03B11BDDC57700AA8269 /* CMLCellLongPressGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLCellLongPressGestureRecognizer.h; sourceTree = "<group>"; };
+		422E03B21BDDC57700AA8269 /* CMLCellLongPressGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLCellLongPressGestureRecognizer.m; sourceTree = "<group>"; };
+		422E03B41BDDC63800AA8269 /* CMLTableViewCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLTableViewCellData.h; sourceTree = "<group>"; };
+		422E03B51BDDC63800AA8269 /* CMLTableViewCellData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTableViewCellData.m; sourceTree = "<group>"; };
 		4246CACF1BD9D88E00042768 /* CeriXMLLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CeriXMLLayout.h; sourceTree = "<group>"; };
 		4246CAD01BD9D88E00042768 /* CeriXMLLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CeriXMLLayout.m; sourceTree = "<group>"; };
 		4246CAE31BDA078600042768 /* ONOXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ONOXMLDocument.h; sourceTree = "<group>"; };
 		4246CAE41BDA078600042768 /* ONOXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ONOXMLDocument.m; sourceTree = "<group>"; };
 		4246CAE61BDA231700042768 /* CMLTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLTableViewCell.h; sourceTree = "<group>"; };
 		4246CAE71BDA231800042768 /* CMLTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTableViewCell.m; sourceTree = "<group>"; };
+		4246CAE91BDDBF0B00042768 /* CMLCellScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLCellScrollView.h; sourceTree = "<group>"; };
+		4246CAEA1BDDBF0B00042768 /* CMLCellScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLCellScrollView.m; sourceTree = "<group>"; };
 		42F030A01BD8F65100C1890A /* CMLTextViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLTextViewModel.h; sourceTree = "<group>"; };
 		42F030A11BD8F65100C1890A /* CMLTextViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTextViewModel.m; sourceTree = "<group>"; };
 		42F030A31BD8F68700C1890A /* CMLImageViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLImageViewModel.h; sourceTree = "<group>"; };
@@ -239,6 +248,12 @@
 			children = (
 				4246CAE61BDA231700042768 /* CMLTableViewCell.h */,
 				4246CAE71BDA231800042768 /* CMLTableViewCell.m */,
+				422E03B41BDDC63800AA8269 /* CMLTableViewCellData.h */,
+				422E03B51BDDC63800AA8269 /* CMLTableViewCellData.m */,
+				4246CAE91BDDBF0B00042768 /* CMLCellScrollView.h */,
+				4246CAEA1BDDBF0B00042768 /* CMLCellScrollView.m */,
+				422E03B11BDDC57700AA8269 /* CMLCellLongPressGestureRecognizer.h */,
+				422E03B21BDDC57700AA8269 /* CMLCellLongPressGestureRecognizer.m */,
 			);
 			path = CMLTableView;
 			sourceTree = "<group>";
@@ -535,6 +550,7 @@
 				4246CAE81BDA231800042768 /* CMLTableViewCell.m in Sources */,
 				421E745F1BD8825600BD40BF /* CMLBaseViewModel.m in Sources */,
 				421E74931BD88D6700BD40BF /* CMLRelativeContainer.m in Sources */,
+				422E03B61BDDC63800AA8269 /* CMLTableViewCellData.m in Sources */,
 				421E74601BD8825600BD40BF /* CMLEdgeDifference.m in Sources */,
 				421E749C1BD8986B00BD40BF /* CMLRelativeContainerModel.m in Sources */,
 				42F030AB1BD8F6C100C1890A /* CMLImageViewController.m in Sources */,
@@ -549,9 +565,11 @@
 				421E74901BD88D5300BD40BF /* CMLLinearContainer.m in Sources */,
 				42F030AE1BD8F6D000C1890A /* CMLTextViewController.m in Sources */,
 				421E748A1BD8889D00BD40BF /* CMLBaseContainer.m in Sources */,
+				4246CAEB1BDDBF0B00042768 /* CMLCellScrollView.m in Sources */,
 				F7D5901C1A47AD6F0004D00E /* PullTableView.m in Sources */,
 				F7D5901B1A47AD6F0004D00E /* MessageInterceptor.m in Sources */,
 				421E747A1BD8831200BD40BF /* CMLConstant.m in Sources */,
+				422E03B31BDDC57700AA8269 /* CMLCellLongPressGestureRecognizer.m in Sources */,
 				421E748D1BD888B900BD40BF /* CMLContainerModel.m in Sources */,
 				F7D5901D1A47AD6F0004D00E /* SWTableViewCell.m in Sources */,
 			);
