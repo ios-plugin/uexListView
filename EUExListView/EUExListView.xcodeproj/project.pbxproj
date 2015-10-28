@@ -35,6 +35,13 @@
 		4246CAE51BDA078600042768 /* ONOXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAE41BDA078600042768 /* ONOXMLDocument.m */; };
 		4246CAE81BDA231800042768 /* CMLTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAE71BDA231800042768 /* CMLTableViewCell.m */; };
 		4246CAEB1BDDBF0B00042768 /* CMLCellScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4246CAEA1BDDBF0B00042768 /* CMLCellScrollView.m */; };
+		42772B2E1BE0B648009DC9ED /* uexListViewCustomLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 42772B2D1BE0B648009DC9ED /* uexListViewCustomLayout.m */; };
+		42772BA11BE0BF03009DC9ED /* FDTemplateLayoutCell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42772BA01BE0BF03009DC9ED /* FDTemplateLayoutCell.framework */; };
+		42772BA21BE0BF13009DC9ED /* FDTemplateLayoutCell.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 42772BA01BE0BF03009DC9ED /* FDTemplateLayoutCell.framework */; };
+		42772BA31BE0BF17009DC9ED /* KVOMutableArray.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 421E74461BD87D5100BD40BF /* KVOMutableArray.framework */; };
+		42772BA41BE0BF1C009DC9ED /* Masonry.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 421E740C1BD8766800BD40BF /* Masonry.framework */; };
+		42772BA51BE0BF20009DC9ED /* MJRefresh.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 421E740D1BD8766800BD40BF /* MJRefresh.framework */; };
+		42772BA61BE0BF24009DC9ED /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 421E740F1BD8766800BD40BF /* ReactiveCocoa.framework */; };
 		42F030A21BD8F65100C1890A /* CMLTextViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A11BD8F65100C1890A /* CMLTextViewModel.m */; };
 		42F030A51BD8F68700C1890A /* CMLImageViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A41BD8F68700C1890A /* CMLImageViewModel.m */; };
 		42F030A81BD8F69600C1890A /* CMLButtonViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A71BD8F69600C1890A /* CMLButtonViewModel.m */; };
@@ -53,9 +60,14 @@
 		F747815F1A302FE90010084B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
+			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				42772BA61BE0BF24009DC9ED /* ReactiveCocoa.framework in CopyFiles */,
+				42772BA51BE0BF20009DC9ED /* MJRefresh.framework in CopyFiles */,
+				42772BA41BE0BF1C009DC9ED /* Masonry.framework in CopyFiles */,
+				42772BA31BE0BF17009DC9ED /* KVOMutableArray.framework in CopyFiles */,
+				42772BA21BE0BF13009DC9ED /* FDTemplateLayoutCell.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +146,9 @@
 		4246CAE71BDA231800042768 /* CMLTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTableViewCell.m; sourceTree = "<group>"; };
 		4246CAE91BDDBF0B00042768 /* CMLCellScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLCellScrollView.h; sourceTree = "<group>"; };
 		4246CAEA1BDDBF0B00042768 /* CMLCellScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLCellScrollView.m; sourceTree = "<group>"; };
+		42772B2C1BE0B648009DC9ED /* uexListViewCustomLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uexListViewCustomLayout.h; sourceTree = "<group>"; };
+		42772B2D1BE0B648009DC9ED /* uexListViewCustomLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = uexListViewCustomLayout.m; sourceTree = "<group>"; };
+		42772BA01BE0BF03009DC9ED /* FDTemplateLayoutCell.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FDTemplateLayoutCell.framework; sourceTree = "<group>"; };
 		42F030A01BD8F65100C1890A /* CMLTextViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLTextViewModel.h; sourceTree = "<group>"; };
 		42F030A11BD8F65100C1890A /* CMLTextViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTextViewModel.m; sourceTree = "<group>"; };
 		42F030A31BD8F68700C1890A /* CMLImageViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLImageViewModel.h; sourceTree = "<group>"; };
@@ -190,6 +205,7 @@
 				421E74101BD8766800BD40BF /* Masonry.framework in Frameworks */,
 				421E74111BD8766800BD40BF /* MJRefresh.framework in Frameworks */,
 				421E74131BD8766800BD40BF /* ReactiveCocoa.framework in Frameworks */,
+				42772BA11BE0BF03009DC9ED /* FDTemplateLayoutCell.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +242,8 @@
 				421E74091BD8765C00BD40BF /* CMLCore */,
 				421E740A1BD8765C00BD40BF /* CMLTableView */,
 				421E740B1BD8765C00BD40BF /* Dependences */,
+				42772B2C1BE0B648009DC9ED /* uexListViewCustomLayout.h */,
+				42772B2D1BE0B648009DC9ED /* uexListViewCustomLayout.m */,
 			);
 			path = CustomLayout;
 			sourceTree = "<group>";
@@ -261,6 +279,7 @@
 		421E740B1BD8765C00BD40BF /* Dependences */ = {
 			isa = PBXGroup;
 			children = (
+				42772BA01BE0BF03009DC9ED /* FDTemplateLayoutCell.framework */,
 				4246CAE31BDA078600042768 /* ONOXMLDocument.h */,
 				4246CAE41BDA078600042768 /* ONOXMLDocument.m */,
 				421E74461BD87D5100BD40BF /* KVOMutableArray.framework */,
@@ -541,6 +560,7 @@
 				421E74961BD88D8500BD40BF /* CMLLinearContainerModel.m in Sources */,
 				42F030B11BD8F6DE00C1890A /* CMLButtonViewController.m in Sources */,
 				42F030A81BD8F69600C1890A /* CMLButtonViewModel.m in Sources */,
+				42772B2E1BE0B648009DC9ED /* uexListViewCustomLayout.m in Sources */,
 				421E74991BD892DA00BD40BF /* CMLMappingCenter.m in Sources */,
 				421E74611BD8825600BD40BF /* CMLUnidimensionalAlignment.m in Sources */,
 				4246CAE51BDA078600042768 /* ONOXMLDocument.m in Sources */,

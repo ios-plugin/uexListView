@@ -35,15 +35,6 @@
 
 @implementation CMLTableViewCell
 
-- (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
 
 
 
@@ -59,10 +50,9 @@
     return self;
 }
 
-
--(void)modifyWithTableView:(__kindof UITableView *)tableView data:(CMLTableViewCellData *)data{
+-(void)modifyWithTableView:(__kindof UITableView *)tableView data:(CMLTableViewCellData *)data delegate:(id<CMLTableViewCellDelegate>)delegate{
     self.cellData=data;
-    
+    self.delegate=delegate;
 
     [self setupContentScrollView];
     [self setupTapGesture];
@@ -106,7 +96,7 @@
     @weakify(self);
     [self.leftContentView mas_updateConstraints:^(MASConstraintMaker *make) {
         @strongify(self);
-        make.right.equalTo(self.contentScrollView.mas_left);
+        make.right.equalTo(self.contentScrollView.mas_left).with.offset(self.cellData.leftSliderOffset);
         make.top.equalTo(self.contentScrollView.mas_top);
         make.bottom.equalTo(self.contentScrollView.mas_bottom);
     }];
@@ -130,7 +120,7 @@
     @weakify(self);
     [self.rightContentView mas_updateConstraints:^(MASConstraintMaker *make) {
         @strongify(self);
-        make.left.equalTo(self.contentScrollView.mas_right);
+        make.left.equalTo(self.contentScrollView.mas_right).with.offset(self.cellData.rightSliderOffset);
         make.top.equalTo(self.contentScrollView.mas_top);
         make.bottom.equalTo(self.contentScrollView.mas_bottom);
     }];
@@ -148,7 +138,7 @@
 -(void)setupContentScrollView{
     self.contentScrollView = [[CMLCellScrollView alloc] init];
     self.contentScrollView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.contentScrollView.delegate = self;
+    
     self.contentScrollView.showsHorizontalScrollIndicator = NO;
     self.contentScrollView.scrollsToTop = NO;
     self.contentScrollView.scrollEnabled = YES;
@@ -165,20 +155,144 @@
         @strongify(self);
         make.edges.equalTo(self);
     }];
+    [self setupScrollViewDelegate];
+    self.contentScrollView.delegate = nil;//这一行不能删！
+    self.contentScrollView.delegate = self;
 
+    
 }
+
+-(void)setupScrollViewDelegate{
+    @weakify(self);
+    RACSignal *scrollViewDidEndDeceleratingSignal=[self rac_signalForSelector:@selector(scrollViewDidEndDecelerating:) fromProtocol:@protocol(UIScrollViewDelegate)];
+    RACSignal *scrollViewDidEndScrollingAnimationSignal=[self rac_signalForSelector:@selector(scrollViewDidEndScrollingAnimation:) fromProtocol:@protocol(UIScrollViewDelegate)];
+    [[RACSignal merge:@[scrollViewDidEndDeceleratingSignal,scrollViewDidEndScrollingAnimationSignal]]subscribeNext:^(id x) {
+        @strongify(self);
+        [self updateCellState];
+    }];
+    
+    [[[self rac_signalForSelector:@selector(scrollViewDidEndDragging:willDecelerate:) fromProtocol:@protocol(UIScrollViewDelegate)]
+     filter:^BOOL(RACTuple * tuple) {
+         return ![tuple.second boolValue];
+    }]
+     subscribeNext:^(id x) {
+        @strongify(self);
+        self.tapGestureRecognizer.enabled=YES;
+    }];
+    
+    [[self rac_signalForSelector:@selector(scrollViewDidScroll:) fromProtocol:@protocol(UIScrollViewDelegate)]
+     subscribeNext:^(RACTuple * tuple) {
+        @strongify(self);
+        UIScrollView *scrollView=tuple.first;
+        if(scrollView.contentOffset.x>[self leftSliderViewWidth] && [self rightSliderViewWidth]==0){
+            
+                [scrollView setContentOffset:CGPointMake([self leftSliderViewWidth], 0) animated:YES];
+                self.tapGestureRecognizer.enabled = YES;
+
+        }
+        if(scrollView.contentOffset.x==0 && [self leftSliderViewWidth] == 0){
+            [scrollView setContentOffset:CGPointMake(0, 0)];
+            self.tapGestureRecognizer.enabled = YES;
+        }
+        [self updateCellState];
+    }];
+}
+
+
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    if (velocity.x >= 0.5f)
+    {
+        if (_cellData.state == CMLTableViewCellStateLeft || !self.rightContentView || [self rightSliderViewWidth] == 0.0)
+        {
+            _cellData.state = CMLTableViewCellStateCenter;
+        }
+        else
+        {
+            _cellData.state = CMLTableViewCellStateRight;
+        }
+    }
+    else if (velocity.x <= -0.5f)
+    {
+        if (_cellData.state == CMLTableViewCellStateRight || !self.leftContentView || self.leftSliderViewWidth == 0.0)
+        {
+            _cellData.state = CMLTableViewCellStateCenter;
+        }
+        else
+        {
+            _cellData.state = CMLTableViewCellStateLeft;
+        }
+    }
+    else
+    {
+        CGFloat leftThreshold = [self contentOffsetForCellState:CMLTableViewCellStateLeft].x + (self.leftSliderViewWidth / 2);
+        CGFloat rightThreshold = [self contentOffsetForCellState:CMLTableViewCellStateRight].x - (self.rightSliderViewWidth / 2);
+        
+        if (targetContentOffset->x > rightThreshold)
+        {
+            _cellData.state = CMLTableViewCellStateRight;
+        }
+        else if (targetContentOffset->x < leftThreshold)
+        {
+            _cellData.state = CMLTableViewCellStateLeft;
+        }
+        else
+        {
+            _cellData.state = CMLTableViewCellStateCenter;
+        }
+    }
+    
+
+    
+    if (_cellData.state != CMLTableViewCellStateCenter)
+    {
+        if (self.cellData.cellShouldHideSliderOnSwipe)
+        {
+            for (CMLTableViewCell *cell in [self.tableView visibleCells]) {
+                if (cell != self && [cell isKindOfClass:[CMLTableViewCell class]]) {
+                    [cell hideSlidersAnimated:YES];
+                }
+            }
+        }
+    }
+    
+    *targetContentOffset = [self contentOffsetForCellState:_cellData.state];
+}
+
+
+-(void)hideSlidersAnimated:(BOOL)animated{
+    if(self.cellData.state !=CMLTableViewCellStateCenter){
+        [self.contentScrollView setContentOffset:[self contentOffsetForCellState:CMLTableViewCellStateCenter] animated:animated];
+    }
+}
+
 -(void)setupTapGesture{
     
     self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] init];
     [[[self.tapGestureRecognizer rac_gestureSignal]
      takeUntil:self.rac_prepareForReuseSignal]
-subscribeNext:^(id x) {
-        
-    }];
+     subscribeNext:^(id x) {
+         [self scrollViewTapped];
+              }];
     self.tapGestureRecognizer.cancelsTouchesInView = NO;
     self.tapGestureRecognizer.delegate = self;
     [self.contentScrollView addGestureRecognizer:self.tapGestureRecognizer];
     
+}
+
+-(void)scrollViewTapped{
+    if (_cellData.state == CMLTableViewCellStateCenter){
+        if (self.isSelected){
+            [self deselectCell];
+        }else if (self.shouldHighlight){
+            [self selectCell];
+        }
+    }else{
+        
+        [self hideSlidersAnimated:YES];
+    }
+
 }
 
 -(void)setupLongPressGesture{
@@ -186,8 +300,24 @@ subscribeNext:^(id x) {
         self.longPressGestureRecognizer = [[CMLCellLongPressGestureRecognizer alloc]init];
         [[[self.longPressGestureRecognizer rac_gestureSignal]
           takeUntil:self.rac_prepareForReuseSignal ]
-         subscribeNext:^(id x) {
-            
+         subscribeNext:^(UIGestureRecognizer *gestureRecognizer) {
+             if (gestureRecognizer.state == UIGestureRecognizerStateBegan && !self.isHighlighted && self.shouldHighlight)
+             {
+                 [self setHighlighted:YES animated:NO];
+             }
+             
+             else if (gestureRecognizer.state == UIGestureRecognizerStateEnded)
+             {
+                 // Cell is already highlighted; clearing it temporarily seems to address visual anomaly.
+                 [self setHighlighted:NO animated:NO];
+                 [self scrollViewTapped];
+             }
+             
+             else if (gestureRecognizer.state == UIGestureRecognizerStateCancelled)
+             {
+                 [self setHighlighted:NO animated:NO];
+             }
+
         }];
         self.longPressGestureRecognizer.cancelsTouchesInView = NO;
         self.longPressGestureRecognizer.minimumPressDuration = 0.2;
@@ -270,32 +400,32 @@ subscribeNext:^(id x) {
             @strongify(self);
             make.right.equalTo(self.contentScrollView.mas_left);
         }];
-        
-        self.leftUtilityClipConstraint.constant = MAX(0, CGRectGetMinX(frame) - CGRectGetMinX(self.frame));
-        self.rightUtilityClipConstraint.constant = MIN(0, CGRectGetMaxX(frame) - CGRectGetMaxX(self.frame));
+
+        self.cellData.leftSliderOffset = MAX(0, CGRectGetMinX(frame) - CGRectGetMinX(self.frame));
+        self.cellData.rightSliderOffset = MIN(0, CGRectGetMaxX(frame) - CGRectGetMaxX(self.frame));
         
         if (self.isEditing) {
-            self.leftUtilityClipConstraint.constant = 0;
-            self.cellScrollView.contentOffset = CGPointMake([self leftUtilityButtonsWidth], 0);
-            _cellState = kCellStateCenter;
+            self.cellData.leftSliderOffset = 0;
+            self.contentScrollView.contentOffset = CGPointMake([self leftSliderViewWidth], 0);
+            self.cellData.state = CMLTableViewCellStateCenter;
         }
         
-        self.leftUtilityClipView.hidden = (self.leftUtilityClipConstraint.constant == 0);
-        self.rightUtilityClipView.hidden = (self.rightUtilityClipConstraint.constant == 0);
+        self.leftContentView.hidden = (self.cellData.leftSliderOffset == 0);
+        self.rightContentView.hidden = (self.cellData.rightSliderOffset == 0);
         
         if (self.accessoryType != UITableViewCellAccessoryNone && !self.editing) {
-            UIView *accessory = [self.cellScrollView.superview.subviews lastObject];
+            UIView *accessory = [self.contentScrollView.superview.subviews lastObject];
             
             CGRect accessoryFrame = accessory.frame;
-            accessoryFrame.origin.x = CGRectGetWidth(frame) - CGRectGetWidth(accessoryFrame) - kAccessoryTrailingSpace + CGRectGetMinX(frame);
+            accessoryFrame.origin.x = CGRectGetWidth(frame) - CGRectGetWidth(accessoryFrame) - 15 + CGRectGetMinX(frame);
             accessory.frame = accessoryFrame;
         }
         
         // Enable or disable the gesture recognizers according to the current mode.
-        if (!self.cellScrollView.isDragging && !self.cellScrollView.isDecelerating)
+        if (!self.contentScrollView.isDragging && !self.contentScrollView.isDecelerating)
         {
             self.tapGestureRecognizer.enabled = YES;
-            self.longPressGestureRecognizer.enabled = (_cellState == kCellStateCenter);
+            self.longPressGestureRecognizer.enabled = (self.cellData.state = CMLTableViewCellStateCenter);
         }
         else
         {
@@ -303,7 +433,155 @@ subscribeNext:^(id x) {
             self.longPressGestureRecognizer.enabled = NO;
         }
         
-        self.cellScrollView.scrollEnabled = !self.isEditing;
+        self.contentScrollView.scrollEnabled = !self.isEditing;
+    }
+}
+#pragma mark - UITableViewCell overrides
+
+- (void)didMoveToSuperview
+{
+    self.tableView = nil;
+    UIView *view = self.superview;
+    
+    do {
+        if ([view isKindOfClass:[UITableView class]])
+        {
+            self.tableView = (UITableView *)view;
+            break;
+        }
+    } while ((view = view.superview));
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    // Offset the contentView origin so that it appears correctly w/rt the enclosing scroll view (to which we moved it).
+    CGRect frame = self.contentView.frame;
+    frame.origin.x = [self leftSliderViewWidth];
+    _contentScrollView.frame = frame;
+    
+    self.contentScrollView.contentSize = CGSizeMake(CGRectGetWidth(self.frame) + [self totalSlidersOffsetX], CGRectGetHeight(self.frame));
+    
+    if (!self.contentScrollView.isTracking && !self.contentScrollView.isDecelerating)
+    {
+        self.contentScrollView.contentOffset = [self contentOffsetForCellState:_cellData.state];
+    }
+    
+    [self updateCellState];
+}
+
+- (void)setFrame:(CGRect)frame
+{
+    self.layoutUpdating = YES;
+    // Fix for new screen sizes
+    // Initially, the cell is still 320 points wide
+    // We need to layout our subviews again when this changes so our constraints clip to the right width
+    BOOL widthChanged = (self.frame.size.width != frame.size.width);
+    
+    [super setFrame:frame];
+    
+    if (widthChanged)
+    {
+        [self layoutIfNeeded];
+    }
+    self.layoutUpdating = NO;
+}
+
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    
+    [self hideSlidersAnimated:NO];
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+
+    
+    [super setSelected:selected animated:animated];
+
+}
+- (BOOL)shouldHighlight
+{
+    BOOL shouldHighlight = YES;
+    
+    if ([self.tableView.delegate respondsToSelector:@selector(tableView:shouldHighlightRowAtIndexPath:)])
+    {
+        NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:self];
+        
+        shouldHighlight = [self.tableView.delegate tableView:self.tableView shouldHighlightRowAtIndexPath:cellIndexPath];
+    }
+    
+    return shouldHighlight;
+}
+
+- (void)selectCell
+{
+    if (_cellData.state == CMLTableViewCellStateCenter)
+    {
+        NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:self];
+        
+        if ([self.tableView.delegate respondsToSelector:@selector(tableView:willSelectRowAtIndexPath:)])
+        {
+            cellIndexPath = [self.tableView.delegate tableView:self.tableView willSelectRowAtIndexPath:cellIndexPath];
+        }
+        
+        if (cellIndexPath)
+        {
+            [self.tableView selectRowAtIndexPath:cellIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            
+            if ([self.tableView.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)])
+            {
+                [self.tableView.delegate tableView:self.tableView didSelectRowAtIndexPath:cellIndexPath];
+            }
+        }
+    }
+}
+
+- (void)deselectCell
+{
+    if (_cellData.state == CMLTableViewCellStateCenter)
+    {
+        NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:self];
+        
+        if ([self.tableView.delegate respondsToSelector:@selector(tableView:willDeselectRowAtIndexPath:)])
+        {
+            cellIndexPath = [self.tableView.delegate tableView:self.tableView willDeselectRowAtIndexPath:cellIndexPath];
+        }
+        
+        if (cellIndexPath)
+        {
+            [self.tableView deselectRowAtIndexPath:cellIndexPath animated:NO];
+            
+            if ([self.tableView.delegate respondsToSelector:@selector(tableView:didDeselectRowAtIndexPath:)])
+            {
+                [self.tableView.delegate tableView:self.tableView didDeselectRowAtIndexPath:cellIndexPath];
+            }
+        }
+    }
+}
+
+
+
+
+- (void)didTransitionToState:(UITableViewCellStateMask)state {
+    [super didTransitionToState:state];
+    
+    if (state == UITableViewCellStateDefaultMask) {
+        [self layoutSubviews];
+    }
+}
+#pragma mark - CMLDelegate
+-(void)CMLRootViewControllerDidChangeUI:(__kindof CMLBaseContainer*)rootViewController{
+    if([self.delegate respondsToSelector:@selector(CMLTableViewCellDidChangeUI:)]){
+        [self.delegate CMLTableViewCellDidChangeUI:self];
+    }
+    
+}
+-(void)CMLViewControllerDidTriggerSingleClickEvent:(__kindof CMLBaseViewController *)viewController{
+    if([self.delegate respondsToSelector:@selector(CMLTableViewCell:didTriggerSingleClickEventFromCMLViewController:)]){
+        [self.delegate CMLTableViewCell:self didTriggerSingleClickEventFromCMLViewController:viewController];
     }
 }
 

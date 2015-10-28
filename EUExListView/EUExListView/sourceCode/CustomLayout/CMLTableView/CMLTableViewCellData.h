@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger,CMLTableViewCellState) {
 
 @property (nonatomic,strong)NSIndexPath *indexPath;
 @property (nonatomic,strong)__kindof CMLContainerModel *leftSliderModel,*rightSliderModel;
+@property (nonatomic,assign)CGFloat leftSliderOffset,rightSliderOffset;
 @property (nonatomic,assign)CMLTableViewCellState state;
 @property (nonatomic,assign)BOOL cellShouldHideSliderOnSwipe;
 @end
