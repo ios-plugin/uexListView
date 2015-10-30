@@ -48,6 +48,7 @@
 		42F030AB1BD8F6C100C1890A /* CMLImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030AA1BD8F6C100C1890A /* CMLImageViewController.m */; };
 		42F030AE1BD8F6D000C1890A /* CMLTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030AD1BD8F6D000C1890A /* CMLTextViewController.m */; };
 		42F030B11BD8F6DE00C1890A /* CMLButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030B01BD8F6DE00C1890A /* CMLButtonViewController.m */; };
+		42FA2F751BE1B16C0081088E /* uexListViewCustomLayoutModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42FA2F741BE1B16C0081088E /* uexListViewCustomLayoutModel.m */; };
 		F74781811A3031AE0010084B /* EUExListView.m in Sources */ = {isa = PBXBuildFile; fileRef = F74781801A3031AE0010084B /* EUExListView.m */; };
 		F7D590191A47AD6F0004D00E /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D58FFA1A47AD6F0004D00E /* EGORefreshTableHeaderView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F7D5901A1A47AD6F0004D00E /* LoadMoreTableFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D58FFC1A47AD6F0004D00E /* LoadMoreTableFooterView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -161,6 +162,8 @@
 		42F030AD1BD8F6D000C1890A /* CMLTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTextViewController.m; sourceTree = "<group>"; };
 		42F030AF1BD8F6DE00C1890A /* CMLButtonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLButtonViewController.h; sourceTree = "<group>"; };
 		42F030B01BD8F6DE00C1890A /* CMLButtonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLButtonViewController.m; sourceTree = "<group>"; };
+		42FA2F731BE1B16C0081088E /* uexListViewCustomLayoutModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uexListViewCustomLayoutModel.h; sourceTree = "<group>"; };
+		42FA2F741BE1B16C0081088E /* uexListViewCustomLayoutModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = uexListViewCustomLayoutModel.m; sourceTree = "<group>"; };
 		F74781611A302FE90010084B /* libuexListView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libuexListView.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F747817F1A3031AE0010084B /* EUExListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUExListView.h; sourceTree = "<group>"; };
 		F74781801A3031AE0010084B /* EUExListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EUExListView.m; sourceTree = "<group>"; };
@@ -244,6 +247,8 @@
 				421E740B1BD8765C00BD40BF /* Dependences */,
 				42772B2C1BE0B648009DC9ED /* uexListViewCustomLayout.h */,
 				42772B2D1BE0B648009DC9ED /* uexListViewCustomLayout.m */,
+				42FA2F731BE1B16C0081088E /* uexListViewCustomLayoutModel.h */,
+				42FA2F741BE1B16C0081088E /* uexListViewCustomLayoutModel.m */,
 			);
 			path = CustomLayout;
 			sourceTree = "<group>";
@@ -559,6 +564,7 @@
 				42F030A51BD8F68700C1890A /* CMLImageViewModel.m in Sources */,
 				421E74961BD88D8500BD40BF /* CMLLinearContainerModel.m in Sources */,
 				42F030B11BD8F6DE00C1890A /* CMLButtonViewController.m in Sources */,
+				42FA2F751BE1B16C0081088E /* uexListViewCustomLayoutModel.m in Sources */,
 				42F030A81BD8F69600C1890A /* CMLButtonViewModel.m in Sources */,
 				42772B2E1BE0B648009DC9ED /* uexListViewCustomLayout.m in Sources */,
 				421E74991BD892DA00BD40BF /* CMLMappingCenter.m in Sources */,

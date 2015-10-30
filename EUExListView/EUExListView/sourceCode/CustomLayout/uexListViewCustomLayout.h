@@ -11,6 +11,16 @@
 @interface uexListViewCustomLayout : NSObject
 @property (nonatomic,weak)EUExListView *euexObj;
 @property (nonatomic,assign)BOOL usingCustomLayout;
+
+
+
 -(instancetype)initWithEuexListView:(EUExListView *)euexObj;
 -(void)reset;
+
+
+#pragma mark - uexAPI
+-(void)openCustom:(NSMutableArray *)inArguments;
+
+
+
 @end

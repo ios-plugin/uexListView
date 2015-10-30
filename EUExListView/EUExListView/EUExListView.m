@@ -301,6 +301,8 @@
 }
 
 
+#define to_string(x) (#x)
+#define to_nsstring(x) ([NSString stringWithCString:to_string(x) encoding:NSUTF8StringEncoding])
 
 -(void)test:(NSMutableArray *)inArguments{
     ONOXMLDocument *rootDocument=[ONOXMLDocument XMLDocumentWithString:[NSString stringWithContentsOfFile:[self absPath:@"res://testCustomLayout.xml"] encoding:NSUTF8StringEncoding error:NULL] encoding:NSUTF8StringEncoding error:NULL];
@@ -315,7 +317,8 @@
     [bgView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(CMLRoot.view);
     }];
-    NSArray *subvs=[CMLRoot.innerView subviews];
+
+
     [EUtility brwView:self.meBrwView addSubview:bgView];
 }
 

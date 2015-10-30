@@ -19,9 +19,16 @@ typedef NS_ENUM(NSInteger,CMLTableViewCellState) {
 
 @interface CMLTableViewCellData : NSObject
 
-@property (nonatomic,strong)NSIndexPath *indexPath;
-@property (nonatomic,strong)__kindof CMLContainerModel *leftSliderModel,*rightSliderModel;
+
+@property (nonatomic,strong)__kindof CMLContainerModel *centerViewModel,*leftSliderModel,*rightSliderModel;
 @property (nonatomic,assign)CGFloat leftSliderOffset,rightSliderOffset;
+@property (nonatomic,assign)CGFloat leftSliderWidth,rightSliderWidth;
 @property (nonatomic,assign)CMLTableViewCellState state;
 @property (nonatomic,assign)BOOL cellShouldHideSliderOnSwipe;
+
+
+- (instancetype)initWithCenterModel:(__kindof CMLContainerModel *)centerViewModel
+                    leftSliderModel:(__kindof CMLContainerModel *)leftSliderModel
+                   rightSliderModel:(__kindof CMLContainerModel *)rightSliderModel;
+
 @end
