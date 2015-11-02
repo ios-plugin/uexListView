@@ -42,13 +42,13 @@
 		42772BA41BE0BF1C009DC9ED /* Masonry.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 421E740C1BD8766800BD40BF /* Masonry.framework */; };
 		42772BA51BE0BF20009DC9ED /* MJRefresh.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 421E740D1BD8766800BD40BF /* MJRefresh.framework */; };
 		42772BA61BE0BF24009DC9ED /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 421E740F1BD8766800BD40BF /* ReactiveCocoa.framework */; };
+		42AE4E0D1BE70B0A002A25EC /* uexListViewCustomLayoutModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AE4E0C1BE70B0A002A25EC /* uexListViewCustomLayoutModel.m */; };
 		42F030A21BD8F65100C1890A /* CMLTextViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A11BD8F65100C1890A /* CMLTextViewModel.m */; };
 		42F030A51BD8F68700C1890A /* CMLImageViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A41BD8F68700C1890A /* CMLImageViewModel.m */; };
 		42F030A81BD8F69600C1890A /* CMLButtonViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030A71BD8F69600C1890A /* CMLButtonViewModel.m */; };
 		42F030AB1BD8F6C100C1890A /* CMLImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030AA1BD8F6C100C1890A /* CMLImageViewController.m */; };
 		42F030AE1BD8F6D000C1890A /* CMLTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030AD1BD8F6D000C1890A /* CMLTextViewController.m */; };
 		42F030B11BD8F6DE00C1890A /* CMLButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42F030B01BD8F6DE00C1890A /* CMLButtonViewController.m */; };
-		42FA2F751BE1B16C0081088E /* uexListViewCustomLayoutModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 42FA2F741BE1B16C0081088E /* uexListViewCustomLayoutModel.m */; };
 		F74781811A3031AE0010084B /* EUExListView.m in Sources */ = {isa = PBXBuildFile; fileRef = F74781801A3031AE0010084B /* EUExListView.m */; };
 		F7D590191A47AD6F0004D00E /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D58FFA1A47AD6F0004D00E /* EGORefreshTableHeaderView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F7D5901A1A47AD6F0004D00E /* LoadMoreTableFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D58FFC1A47AD6F0004D00E /* LoadMoreTableFooterView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -150,6 +150,8 @@
 		42772B2C1BE0B648009DC9ED /* uexListViewCustomLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uexListViewCustomLayout.h; sourceTree = "<group>"; };
 		42772B2D1BE0B648009DC9ED /* uexListViewCustomLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = uexListViewCustomLayout.m; sourceTree = "<group>"; };
 		42772BA01BE0BF03009DC9ED /* FDTemplateLayoutCell.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FDTemplateLayoutCell.framework; sourceTree = "<group>"; };
+		42AE4E0B1BE70B0A002A25EC /* uexListViewCustomLayoutModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uexListViewCustomLayoutModel.h; sourceTree = "<group>"; };
+		42AE4E0C1BE70B0A002A25EC /* uexListViewCustomLayoutModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = uexListViewCustomLayoutModel.m; sourceTree = "<group>"; };
 		42F030A01BD8F65100C1890A /* CMLTextViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLTextViewModel.h; sourceTree = "<group>"; };
 		42F030A11BD8F65100C1890A /* CMLTextViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTextViewModel.m; sourceTree = "<group>"; };
 		42F030A31BD8F68700C1890A /* CMLImageViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLImageViewModel.h; sourceTree = "<group>"; };
@@ -162,8 +164,6 @@
 		42F030AD1BD8F6D000C1890A /* CMLTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLTextViewController.m; sourceTree = "<group>"; };
 		42F030AF1BD8F6DE00C1890A /* CMLButtonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMLButtonViewController.h; sourceTree = "<group>"; };
 		42F030B01BD8F6DE00C1890A /* CMLButtonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMLButtonViewController.m; sourceTree = "<group>"; };
-		42FA2F731BE1B16C0081088E /* uexListViewCustomLayoutModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uexListViewCustomLayoutModel.h; sourceTree = "<group>"; };
-		42FA2F741BE1B16C0081088E /* uexListViewCustomLayoutModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = uexListViewCustomLayoutModel.m; sourceTree = "<group>"; };
 		F74781611A302FE90010084B /* libuexListView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libuexListView.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F747817F1A3031AE0010084B /* EUExListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUExListView.h; sourceTree = "<group>"; };
 		F74781801A3031AE0010084B /* EUExListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EUExListView.m; sourceTree = "<group>"; };
@@ -247,8 +247,8 @@
 				421E740B1BD8765C00BD40BF /* Dependences */,
 				42772B2C1BE0B648009DC9ED /* uexListViewCustomLayout.h */,
 				42772B2D1BE0B648009DC9ED /* uexListViewCustomLayout.m */,
-				42FA2F731BE1B16C0081088E /* uexListViewCustomLayoutModel.h */,
-				42FA2F741BE1B16C0081088E /* uexListViewCustomLayoutModel.m */,
+				42AE4E0B1BE70B0A002A25EC /* uexListViewCustomLayoutModel.h */,
+				42AE4E0C1BE70B0A002A25EC /* uexListViewCustomLayoutModel.m */,
 			);
 			path = CustomLayout;
 			sourceTree = "<group>";
@@ -564,7 +564,7 @@
 				42F030A51BD8F68700C1890A /* CMLImageViewModel.m in Sources */,
 				421E74961BD88D8500BD40BF /* CMLLinearContainerModel.m in Sources */,
 				42F030B11BD8F6DE00C1890A /* CMLButtonViewController.m in Sources */,
-				42FA2F751BE1B16C0081088E /* uexListViewCustomLayoutModel.m in Sources */,
+				42AE4E0D1BE70B0A002A25EC /* uexListViewCustomLayoutModel.m in Sources */,
 				42F030A81BD8F69600C1890A /* CMLButtonViewModel.m in Sources */,
 				42772B2E1BE0B648009DC9ED /* uexListViewCustomLayout.m in Sources */,
 				421E74991BD892DA00BD40BF /* CMLMappingCenter.m in Sources */,
@@ -696,11 +696,15 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = $SRCROOT/EUExListView/sourceCode/PrefixHeader.pch;
-				HEADER_SEARCH_PATHS = /usr/include/libxml2/;
+				HEADER_SEARCH_PATHS = (
+					/usr/include/libxml2/,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = uexListView;
 				SKIP_INSTALL = YES;
+				USE_HEADERMAP = YES;
 				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
@@ -718,11 +722,15 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = $SRCROOT/EUExListView/sourceCode/PrefixHeader.pch;
-				HEADER_SEARCH_PATHS = /usr/include/libxml2/;
+				HEADER_SEARCH_PATHS = (
+					/usr/include/libxml2/,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = uexListView;
 				SKIP_INSTALL = YES;
+				USE_HEADERMAP = YES;
 				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Release;

@@ -41,37 +41,43 @@
     return self;
 }
 
--(BOOL)setupWithXMLData:(ONOXMLElement *)XMLData{
-    if(!XMLData){
+
+
+-(BOOL)updateValues:(id)values{
+    if(!values){
         return NO;
     }
-    if(XMLData[CMLPropertyWidth]){
-        self.width=[XMLData[CMLPropertyWidth] floatValue];
+    if(![values isKindOfClass:[ONOXMLElement class]] && ![values isKindOfClass:[NSDictionary class]]){
+        return NO;
     }
-    if(XMLData[CMLPropertyHeight]){
-        self.height=[XMLData[CMLPropertyHeight] floatValue];
+    
+    if(values[CMLPropertyWidth]){
+        self.width=[values[CMLPropertyWidth] floatValue];
     }
-    if(XMLData[CMLPropertyWeight]){
-        self.weight=[XMLData[CMLPropertyWeight] floatValue];
+    if(values[CMLPropertyHeight]){
+        self.height=[values[CMLPropertyHeight] floatValue];
     }
-    if(XMLData[CMLPropertyBackground]){
-        self.bgString=XMLData[CMLPropertyBackground];
+    if(values[CMLPropertyWeight]){
+        self.weight=[values[CMLPropertyWeight] floatValue];
     }
-    if(XMLData[CMLPropertyPadding]){
-        [self.padding updateValueWithAttributes:[[XMLData[CMLPropertyPadding] CML_CLSTR] componentsSeparatedByString:@" "]];
+    if(values[CMLPropertyBackground]){
+        self.bgString=values[CMLPropertyBackground];
     }
-    if(XMLData[CMLPropertyMargin]){
-        [self.margin updateValueWithAttributes:[[XMLData[CMLPropertyMargin] CML_CLSTR] componentsSeparatedByString:@" "]];
+    if(values[CMLPropertyPadding]){
+        [self.padding updateValueWithAttributes:[[values[CMLPropertyPadding] CML_CLSTR] componentsSeparatedByString:@" "]];
     }
-    if(XMLData[CMLPropertyGravity]){
-        [self.gravityInfo updateWithAttributes:[[XMLData[CMLPropertyGravity] CML_CLSTR]componentsSeparatedByString:@"|"]];
+    if(values[CMLPropertyMargin]){
+        [self.margin updateValueWithAttributes:[[values[CMLPropertyMargin] CML_CLSTR] componentsSeparatedByString:@" "]];
     }
-    if(XMLData[CMLPropertyFloat]){
-        [self.floatInfo updateWithAttributes:[[XMLData[CMLPropertyFloat] CML_CLSTR]componentsSeparatedByString:@"|"]];
+    if(values[CMLPropertyGravity]){
+        [self.gravityInfo updateWithAttributes:[[values[CMLPropertyGravity] CML_CLSTR]componentsSeparatedByString:@"|"]];
     }
-
-    if(XMLData[CMLPropertyRelation]){
-        NSArray *relations=[[XMLData[CMLPropertyRelation] CML_CLSTR] componentsSeparatedByString:@";"];
+    if(values[CMLPropertyFloat]){
+        [self.floatInfo updateWithAttributes:[[values[CMLPropertyFloat] CML_CLSTR]componentsSeparatedByString:@"|"]];
+    }
+    
+    if(values[CMLPropertyRelation]){
+        NSArray *relations=[[values[CMLPropertyRelation] CML_CLSTR] componentsSeparatedByString:@";"];
         [self.relations removeAllObjects];
         for(int i=0;i<[relations count];i++){
             CMLElementRelation *aRelation=[[CMLElementRelation alloc]initWithDataString:relations[i]];
@@ -80,16 +86,13 @@
             }
         }
     }
-    if(XMLData[CMLPropertyId]){
-        self.identifier=[[XMLData[CMLPropertyId] CML_toString] CML_CLSTR];
+    if(values[CMLPropertyId]){
+        self.identifier=[[values[CMLPropertyId] CML_toString] CML_CLSTR];
     }
-    if(XMLData[CMLPropertyOnClick]){
-        self.onSingleClickInfo=[XMLData[CMLPropertyOnClick] CML_CLSTR];
+    if(values[CMLPropertyOnClick]){
+        self.onSingleClickInfo=[values[CMLPropertyOnClick] CML_CLSTR];
     }
     return YES;
 
-
-
-    
 }
 @end

@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger,CMLTableViewCellState) {
 @property (nonatomic,assign)CGFloat leftSliderWidth,rightSliderWidth;
 @property (nonatomic,assign)CMLTableViewCellState state;
 @property (nonatomic,assign)BOOL cellShouldHideSliderOnSwipe;
-
+@property (nonatomic,strong)NSDictionary *defaultCenterSettings, *defaultLeftSettings,*defaultRightSettings;
 
 - (instancetype)initWithCenterModel:(__kindof CMLContainerModel *)centerViewModel
                     leftSliderModel:(__kindof CMLContainerModel *)leftSliderModel

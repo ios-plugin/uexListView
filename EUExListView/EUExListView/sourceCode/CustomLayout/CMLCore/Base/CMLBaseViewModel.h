@@ -46,6 +46,8 @@ typedef NS_ENUM(NSInteger,CMLViewModelType) {
 
 
 
-- (BOOL)setupWithXMLData:(ONOXMLElement *)XMLData;
 
+
+
+-(BOOL)updateValues:(id)values;
 @end

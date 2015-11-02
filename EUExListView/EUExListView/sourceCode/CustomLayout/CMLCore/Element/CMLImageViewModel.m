@@ -19,26 +19,26 @@
     }
     return self;
 }
--(BOOL)setupWithXMLData:(ONOXMLElement *)XMLData{
-    if(![super setupWithXMLData:XMLData]){
+-(BOOL)updateValues:(id)values{
+    if(![super updateValues:values]){
         return NO;
     }
-    if(XMLData[CMLPropertySrc]){
-        self.imageSrc=[XMLData[CMLPropertySrc] CML_CLSTR];
+    if(values[CMLPropertySrc]){
+        self.imageSrc=[values[CMLPropertySrc] CML_CLSTR];
     }
-    if(XMLData[CMLPropertyPlaceholder]){
-        self.placeholderPath=[XMLData[CMLPropertyPlaceholder] CML_CLSTR];
+    if(values[CMLPropertyPlaceholder]){
+        self.placeholderPath=[values[CMLPropertyPlaceholder] CML_CLSTR];
     }
-    if(XMLData[CMLPropertyScaleType]){
-        NSString *scaleTypeString=[[XMLData[CMLPropertyScaleType] CML_CLSTR]lowercaseString];
+    if(values[CMLPropertyScaleType]){
+        NSString *scaleTypeString=[[values[CMLPropertyScaleType] CML_CLSTR]lowercaseString];
         self.scaleType =
         ([scaleTypeString isEqualToString:@"fitxy"])        ?CMLImageScaleFitXY:
         ([scaleTypeString isEqualToString:@"centercrop"])   ?CMLImageScaleCenterCrop:
         ([scaleTypeString isEqualToString:@"centerinside"]) ?CMLImageScaleCenterInside:CMLImageScaleCenter;
         
     }
-    if(XMLData[CMLPropertyWebCacheOption]){
-        self.webCacheOptions=[XMLData[CMLPropertyWebCacheOption] integerValue];
+    if(values[CMLPropertyWebCacheOption]){
+        self.webCacheOptions=[values[CMLPropertyWebCacheOption] integerValue];
     }
     return YES;
 }

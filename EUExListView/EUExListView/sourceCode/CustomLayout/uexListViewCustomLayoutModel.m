@@ -10,6 +10,26 @@
 
 #import "CMLTableViewCellData.h"
 #import "EUExListView.h"
+
+typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
+    uexListViewCustomLayoutXMLDataLeft,
+    uexListViewCustomLayoutXMLDataCenter,
+    uexListViewCustomLayoutXMLDataRight
+};
+
+
+
+@interface uexListViewCustomLayoutModel()
+@property (nonatomic,strong,readwrite)NSMutableDictionary<NSString *,ONOXMLDocument *> *leftXMLDictionary;
+@property (nonatomic,strong,readwrite)NSMutableDictionary<NSString *,ONOXMLDocument *> *centerXMLDictionary;
+@property (nonatomic,strong,readwrite)NSMutableDictionary<NSString *,ONOXMLDocument *> *rightXMLDictionary;
+@property (nonatomic,assign,readwrite)uexListViewCustomLayoutRefreshMode refreshMode;
+@property (nonatomic,assign,readwrite)uexListViewCustomLayoutSwipeType swipeType;
+
+@property (nonatomic,strong,readwrite)NSMutableArray<CMLTableViewCellData *> *cellDataSource;
+
+
+@end
 @implementation uexListViewCustomLayoutModel
 
 
@@ -100,4 +120,62 @@
     }
     return YES;
 }
+-(void)resetCellDataSource:(NSArray *)dataArray{
+    [self.cellDataSource removeAllObjects];
+    for(int i=0;i<dataArray.count;i++){
+        if([dataArray[i] isKindOfClass:[NSDictionary class]]){
+            [self addCellData:dataArray[i]];
+        }
+    }
+    
+}
+
+
+
+-(void)addCellData:(NSDictionary *)dataInfo{
+    __kindof CMLBaseViewModel *leftModel,*centerModel,*rightModel;
+    centerModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataCenter byKey:@"center"];
+    switch (self.swipeType) {
+        case uexListViewCustomLayoutSwipeTypeNone:{
+            
+            break;
+        }
+        case uexListViewCustomLayoutSwipeTypeBothLeft:{
+            break;
+        }
+        case uexListViewCustomLayoutSwipeTypeOnlyLeft:{
+            break;
+        }
+        case uexListViewCustomLayoutSwipeTypeOnlyRight:{
+            break;
+        }
+
+    }
+    //CMLTableViewCellData *cellData=[CMLTableViewCellData alloc]initWithCenterModel:[CeriXMLLayout modelWithXMLData:[self.]] leftSliderModel:<#(__kindof CMLContainerModel *)#> rightSliderModel:<#(__kindof CMLContainerModel *)#>
+}
+
+
+-(__kindof CMLBaseViewModel *)fetchModelFromXML:(uexListViewCustomLayoutXMLDataSource)datasource byKey:(NSString *)key{
+    NSDictionary<NSString *,ONOXMLDocument *> *target=nil;
+    switch (datasource) {
+        case uexListViewCustomLayoutXMLDataLeft:{
+            target=self.leftXMLDictionary;
+            break;
+        }
+        case uexListViewCustomLayoutXMLDataRight:{
+            target=self.rightXMLDictionary;
+            break;
+        }
+        case uexListViewCustomLayoutXMLDataCenter:{
+            target=self.centerXMLDictionary;
+        }
+
+    }
+    ONOXMLDocument *doc=[target objectForKey:key];
+    if(doc){
+        return [CeriXMLLayout modelWithXMLData:doc.rootElement];
+    }
+}
+
+
 @end

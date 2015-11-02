@@ -33,27 +33,27 @@
         }
         case CMLViewModelLinearContainerModel: {
             model=[[CMLLinearContainerModel alloc]init];
-            [model setupWithXMLData:XMLData];
+            [model updateValues:XMLData];
             break;
         }
         case CMLViewModelRelativeContainerModel: {
             model=[[CMLRelativeContainerModel alloc]init];
-            [model setupWithXMLData:XMLData];
+            [model updateValues:XMLData];
             break;
         }
         case CMLViewModelImageViewModel: {
             model=[[CMLImageViewModel alloc]init];
-            [model setupWithXMLData:XMLData];
+            [model updateValues:XMLData];
             break;
         }
         case CMLViewModelButtonViewModel: {
             model=[[CMLButtonViewModel alloc]init];
-            [model setupWithXMLData:XMLData];
+            [model updateValues:XMLData];
             break;
         }
         case CMLViewModelTextViewModel: {
             model=[[CMLTextViewModel alloc]init];
-            [model setupWithXMLData:XMLData];
+            [model updateValues:XMLData];
             break;
         }
             

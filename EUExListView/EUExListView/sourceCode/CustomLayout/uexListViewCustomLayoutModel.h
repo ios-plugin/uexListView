@@ -11,30 +11,42 @@
 #import "CMLTableViewCell.h"
 
 
+
+@class EUExListView;
+
+
+
+@interface uexListViewCustomLayoutModel : NSObject
+
+
+
+
+
+
 typedef NS_ENUM(NSInteger,uexListViewCustomLayoutRefreshMode) {
-    uexListViewCustomLayoutRefreshNone,
+    uexListViewCustomLayoutRefreshNone=0,
     uexListViewCustomLayoutRefreshTop,
     uexListViewCustomLayoutRefreshBottom,
-    uexListViewCustomLayoutRefreshBothTopAndBottom
+    uexListViewCustomLayoutRefreshBothTopAndBottom,
 };
 typedef NS_ENUM(NSInteger,uexListViewCustomLayoutSwipeType) {
-    uexListViewCustomLayoutSwipeTypeOnlyRight,
+    uexListViewCustomLayoutSwipeTypeOnlyRight=0,
     uexListViewCustomLayoutSwipeTypeOnlyLeft,
     uexListViewCustomLayoutSwipeTypeNone,
-    uexListViewCustomLayoutSwipeTypeBothLeft
+    uexListViewCustomLayoutSwipeTypeBothLeft,
 };
-@class EUExListView;
-@interface uexListViewCustomLayoutModel : NSObject
+ 
+
 
 @property (nonatomic,weak)EUExListView *euexObj;
 
-@property (nonatomic,strong)NSMutableDictionary *leftXMLDictionary;
-@property (nonatomic,strong)NSMutableDictionary *centerXMLDictionary;
-@property (nonatomic,strong)NSMutableDictionary *rightXMLDictionary;
-@property (nonatomic,assign)uexListViewCustomLayoutRefreshMode refreshMode;
-@property (nonatomic,assign)uexListViewCustomLayoutSwipeType swipeType;
+@property (nonatomic,strong,readonly)NSMutableDictionary *leftXMLDictionary;
+@property (nonatomic,strong,readonly)NSMutableDictionary *centerXMLDictionary;
+@property (nonatomic,strong,readonly)NSMutableDictionary *rightXMLDictionary;
+@property (nonatomic,assign,readonly)uexListViewCustomLayoutRefreshMode refreshMode;
+@property (nonatomic,assign,readonly)uexListViewCustomLayoutSwipeType swipeType;
 
-@property (nonatomic,strong)NSMutableArray<CMLTableViewCellData *> *cellDataSource;
+@property (nonatomic,strong,readonly)NSMutableArray<CMLTableViewCellData *> *cellDataSource;
 
 @property (nonatomic,assign)CGFloat leftSliderLimit,rightSliderLimit;
 
@@ -44,7 +56,12 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutSwipeType) {
 -(BOOL)parseRefreshMode:(NSDictionary *)info;
 -(BOOL)parseSwipeType:(NSDictionary *)info;
 -(BOOL)parseSliderWidth:(NSDictionary *)info;
--(BOOL)parseCellDataSource:(NSArray *)dataArray;
 
+
+-(void)resetCellDataSource:(NSArray *)dataArray;
+
+
+-(void)addCellData:(NSDictionary *)dataInfo;
 -(void)reset;
+
 @end

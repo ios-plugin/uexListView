@@ -27,8 +27,10 @@
 //properties only for root view controller
 @property (nonatomic,strong) NSDictionary          *infoDict;
 @property (nonatomic,assign) BOOL                  isRootViewController;
-@property (nonatomic,strong) NSMutableDictionary   *namedViewControllers;
+@property (nonatomic,strong) NSMutableDictionary<NSString *,__kindof CMLBaseViewController *>   *namedViewControllers;
 @property (nonatomic,weak  ) id<CeriXMLLayoutDelegate> delegate;
+
+-(BOOL)updateValues:(NSDictionary *)values inChildrenViewControllerNamed:(NSString *)vcIdentifier;
 -(void)handleSingleClickEvent:(__kindof CMLBaseViewController *)viewController;
 
 

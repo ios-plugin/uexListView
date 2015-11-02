@@ -19,6 +19,19 @@
 #define fetch_cgfloat_necessarily(x) CGFloat x =([info objectForKey:to_nsstring(x)]?[info[to_nsstring(x)] floatValue]:(isSuccess=NO,1))
 
 
+typedef NS_ENUM(NSInteger,uexListViewCustomLayoutRefreshStatus) {
+    uexListViewCustomLayoutRefreshStatusBegin=0,
+    uexListViewCustomLayoutRefreshStatusRefreshing,
+    uexListViewCustomLayoutRefreshStatusFinish
+};
+
+typedef NS_ENUM(NSInteger,uexListViewCustomLayoutRefreshObject){
+    uexListViewCustomLayoutRefreshHeader,
+    uexListViewCustomLayoutRefreshFooter
+};
+
+
+
 NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCellIdentifier";
 
 @interface uexListViewCustomLayout()<UITableViewDelegate,UITableViewDataSource,CMLTableViewCellDelegate>
@@ -65,7 +78,7 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
         return;
     }
     if([info objectForKey:@"data"] && [info[@"data"] isKindOfClass:[NSArray class]]){
-        [self.model parseCellDataSource:info[@"data"]];
+        [self.model resetCellDataSource:info[@"data"]];
     }
     if([self openListView]){
         self.usingCustomLayout=YES;
@@ -98,12 +111,39 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
     self.tableView.delegate=self;
     self.tableView.dataSource=self;
     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    [self setRefresh];
     return YES;
 
 }
 
--(BOOL)setRefresh{
-    //header
+-(void)setRefresh{
+
+    switch (self.model.refreshMode) {
+        case uexListViewCustomLayoutRefreshNone:{
+            break;
+        }
+        case uexListViewCustomLayoutRefreshTop:{
+            [self setRefreshHeader];
+            break;
+        }
+        case uexListViewCustomLayoutRefreshBottom:{
+            [self setRefreshFooter];
+            break;
+        }
+        case uexListViewCustomLayoutRefreshBothTopAndBottom:{
+            [self setRefreshHeader];
+            [self setRefreshFooter];
+            break;
+        }
+            
+        
+    }
+
+    
+    
+}
+
+-(void)setRefreshHeader{
     MJRefreshHeader *header=[MJRefreshHeader headerWithRefreshingBlock:^{
         
     }];
@@ -111,13 +151,15 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
         MJRefreshState headerState =(MJRefreshState)[x integerValue];
         switch (headerState) {
             case MJRefreshStateWillRefresh:{
-                
+                [self refreshObject:uexListViewCustomLayoutRefreshHeader callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusRefreshing];
                 break;
             }
             case MJRefreshStatePulling:{
+                [self refreshObject:uexListViewCustomLayoutRefreshHeader callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusBegin];
                 break;
             }
             case MJRefreshStateRefreshing:{
+                [self refreshObject:uexListViewCustomLayoutRefreshHeader callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusFinish];
                 break;
             }
             default:{
@@ -125,7 +167,37 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
             }
         }
     }];
+    self.tableView.header=header;
 }
+
+-(void)setRefreshFooter{
+    MJRefreshFooter *footer=[MJRefreshFooter footerWithRefreshingBlock:^{
+        
+    }];
+    [RACObserve(footer, state) subscribeNext:^(id x) {
+        MJRefreshState headerState =(MJRefreshState)[x integerValue];
+        switch (headerState) {
+            case MJRefreshStateWillRefresh:{
+                [self refreshObject:uexListViewCustomLayoutRefreshFooter callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusRefreshing];
+                break;
+            }
+            case MJRefreshStatePulling:{
+                [self refreshObject:uexListViewCustomLayoutRefreshFooter callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusBegin];
+                break;
+            }
+            case MJRefreshStateRefreshing:{
+                [self refreshObject:uexListViewCustomLayoutRefreshFooter callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusFinish];
+                break;
+            }
+            default:{
+                break;
+            }
+        }
+    }];
+    self.tableView.footer=footer;
+
+}
+
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return [self.model.cellDataSource count];
@@ -136,4 +208,43 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
 }
 
 #pragma mark - UITableViewDelegate
+
+
+
+
+
+
+#pragma mark - js callback
+
+- (void)callBackJsonWithName:(NSString *)funcName object:(id)obj{
+    static NSString * pluginName=@"uexListView";
+    NSString *cbStr=nil;
+    if([obj isKindOfClass:[NSString class]]){
+        cbStr=obj;
+    }else{
+        cbStr= [obj JSONFragment];
+    }
+    NSString *jsStr=[NSString stringWithFormat:@"if(%@.%@ != null){%@.%@('%@');}",pluginName,funcName,pluginName,funcName,cbStr];
+    [EUtility brwView:self.euexObj.meBrwView evaluateScript:jsStr];
+}
+
+
+-(void)refreshObject:(uexListViewCustomLayoutRefreshObject)obj callbackRefreshStatus:(uexListViewCustomLayoutRefreshStatus)status{
+    if(!self.usingCustomLayout){
+        return;
+    }
+    NSString *method=@"";
+    switch (obj) {
+        case uexListViewCustomLayoutRefreshFooter:{
+            method=@"onCustomPullRefreshFooter";
+            break;
+        }
+        case uexListViewCustomLayoutRefreshHeader:{
+            method=@"onCustomPullRefreshHeader";
+            break;
+        }
+    }
+    [self callBackJsonWithName:method object:@{@"status":@(status)}];
+}
+
 @end

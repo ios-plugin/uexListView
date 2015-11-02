@@ -17,4 +17,8 @@
 @property (nonatomic,strong)CMLMappingCenter *mappingCenter;
 @property (nonatomic,assign)BOOL isRootModel;
 @property (nonatomic,assign)NSInteger changeCount;
+
+
+
+
 @end

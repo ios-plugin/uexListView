@@ -301,8 +301,7 @@
 }
 
 
-#define to_string(x) (#x)
-#define to_nsstring(x) ([NSString stringWithCString:to_string(x) encoding:NSUTF8StringEncoding])
+
 
 -(void)test:(NSMutableArray *)inArguments{
     ONOXMLDocument *rootDocument=[ONOXMLDocument XMLDocumentWithString:[NSString stringWithContentsOfFile:[self absPath:@"res://testCustomLayout.xml"] encoding:NSUTF8StringEncoding error:NULL] encoding:NSUTF8StringEncoding error:NULL];

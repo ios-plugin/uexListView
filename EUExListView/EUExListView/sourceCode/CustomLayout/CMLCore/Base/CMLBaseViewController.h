@@ -38,4 +38,7 @@
 -(void)addAChange;
 -(void)finishAChange;
 -(__kindof UIView*)makeInnerView;
+
+
+
 @end

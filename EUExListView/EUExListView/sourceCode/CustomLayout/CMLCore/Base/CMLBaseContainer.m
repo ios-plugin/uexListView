@@ -91,7 +91,7 @@
     if (!self.isRootViewController) {
         return;
     }
-    NSLog(viewController.model.onSingleClickInfo);
+
     if(self.delegate && [self.delegate respondsToSelector:@selector(CMLViewControllerDidTriggerSingleClickEvent:)]){
         [self.delegate CMLViewControllerDidTriggerSingleClickEvent:viewController];
     }
@@ -102,5 +102,16 @@
 
     
     return innerView;
+}
+
+-(BOOL)updateValues:(NSDictionary *)values inChildrenViewControllerNamed:(NSString *)vcIdentifier{
+    if(!self.isRootViewController||!self.namedViewControllers){
+        return NO;
+    }
+    if(![self.namedViewControllers objectForKey:vcIdentifier]){
+        return NO;
+    }
+    __kindof CMLBaseViewController *vc=[self.namedViewControllers objectForKey:vcIdentifier];
+    return [vc.model updateValues:values];
 }
 @end

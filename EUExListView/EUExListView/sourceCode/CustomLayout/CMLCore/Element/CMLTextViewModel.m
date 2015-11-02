@@ -22,21 +22,21 @@
     return self;
 }
 
--(BOOL)setupWithXMLData:(ONOXMLElement *)XMLData{
-    if(![super setupWithXMLData:XMLData]){
+-(BOOL)updateValues:(id)values{
+    if(![super updateValues:values]){
         return NO;
     }
-    if(XMLData[CMLPropertyText]){
-        self.text=XMLData[CMLPropertyText];
+    if(values[CMLPropertyText]){
+        self.text=values[CMLPropertyText];
     }
-    if(XMLData[CMLPropertyTextSize]){
-        self.textSize=[XMLData[CMLPropertyTextSize] floatValue];
+    if(values[CMLPropertyTextSize]){
+        self.textSize=[values[CMLPropertyTextSize] floatValue];
     }
-    if(XMLData[CMLPropertyTextColor]){
-        self.textColor=[UIColor CML_ColorFromHtmlString:XMLData[CMLPropertyTextColor]];
+    if(values[CMLPropertyTextColor]){
+        self.textColor=[UIColor CML_ColorFromHtmlString:values[CMLPropertyTextColor]];
     }
-    if(XMLData[CMLPropertyMaxLines]){
-        self.maxLines=[XMLData[CMLPropertyMaxLines] integerValue];
+    if(values[CMLPropertyMaxLines]){
+        self.maxLines=[values[CMLPropertyMaxLines] integerValue];
     }
     return YES;
 }

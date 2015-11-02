@@ -18,12 +18,12 @@
     }
     return self;
 }
--(BOOL)setupWithXMLData:(ONOXMLElement *)XMLData{
-    if(![super setupWithXMLData:XMLData]){
+-(BOOL)updateValues:(id)values{
+    if(![super updateValues:values]){
         return NO;
     }
-    if(XMLData[CMLPropertyOrientation]){
-        NSString *orientationInfo =[[XMLData[CMLPropertyOrientation] CML_CLSTR]lowercaseString];
+    if(values[CMLPropertyOrientation]){
+        NSString *orientationInfo =[[values[CMLPropertyOrientation] CML_CLSTR]lowercaseString];
         if([orientationInfo isEqual:@"horizontal"]){
             self.orientation=CMLLinearContainerOrientationHorizental;
         }else if([orientationInfo isEqual:@"vertical"]){

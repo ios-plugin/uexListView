@@ -6,8 +6,10 @@
 //  Copyright © 2015年 AppCan.can. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+
 @class EUExListView;
+
+
 @interface uexListViewCustomLayout : NSObject
 @property (nonatomic,weak)EUExListView *euexObj;
 @property (nonatomic,assign)BOOL usingCustomLayout;

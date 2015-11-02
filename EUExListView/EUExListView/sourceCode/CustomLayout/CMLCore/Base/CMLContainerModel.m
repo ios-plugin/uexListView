@@ -26,10 +26,14 @@
     self.mappingCenter=[[CMLMappingCenter alloc]init];
 }
 
--(BOOL)setupWithXMLData:(ONOXMLElement *)XMLData{
-    if(![super setupWithXMLData:XMLData]){
+-(BOOL)updateValues:(id)values{
+    if(![super updateValues:values]){
         return NO;
     }
+    if(![values isKindOfClass:[ONOXMLElement class]]){
+        return YES;
+    }
+    ONOXMLElement *XMLData=values;
     NSArray * xmlChildren =[XMLData children];
     for(int i=0;i<[xmlChildren count];i++){
         if([[xmlChildren objectAtIndex:i] isKindOfClass:[ONOXMLElement class]]){
