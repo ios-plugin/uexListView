@@ -30,7 +30,7 @@
 @property (nonatomic,strong) NSMutableDictionary<NSString *,__kindof CMLBaseViewController *>   *namedViewControllers;
 @property (nonatomic,weak  ) id<CeriXMLLayoutDelegate> delegate;
 
--(BOOL)updateValues:(NSDictionary *)values inChildrenViewControllerNamed:(NSString *)vcIdentifier;
+
 -(void)handleSingleClickEvent:(__kindof CMLBaseViewController *)viewController;
 
 

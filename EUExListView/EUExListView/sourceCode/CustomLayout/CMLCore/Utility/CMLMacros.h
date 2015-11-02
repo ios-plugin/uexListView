@@ -13,4 +13,8 @@
 #define CML_ASYNC_DO_IN_MAIN_QUEUE(x) dispatch_async(dispatch_get_main_queue(), x)
 
 
+#define CML_TO_STRING(x) #x
+#define CML_TO_NSSTRING(x) [NSString stringWithCString:CML_TO_STRING(x) encoding:NSUTF8StringEncoding]
+
+
 #endif /* CMLMacros_h */

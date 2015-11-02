@@ -104,14 +104,4 @@
     return innerView;
 }
 
--(BOOL)updateValues:(NSDictionary *)values inChildrenViewControllerNamed:(NSString *)vcIdentifier{
-    if(!self.isRootViewController||!self.namedViewControllers){
-        return NO;
-    }
-    if(![self.namedViewControllers objectForKey:vcIdentifier]){
-        return NO;
-    }
-    __kindof CMLBaseViewController *vc=[self.namedViewControllers objectForKey:vcIdentifier];
-    return [vc.model updateValues:values];
-}
 @end

@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
 
 
 -(BOOL)parseXMLData:(NSDictionary *)info{
-    if(![info objectForKey:@"layout"]||![[info objectForKey:@"layout"] isKindOfClass:[NSDictionary class]]){
+    if(uexLVCL_check_if_not_dictionary([info objectForKey:@"layout"])){
         return NO;
     }
     NSDictionary *layoutDict=[info objectForKey:@"layout"];
@@ -123,7 +123,7 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
 -(void)resetCellDataSource:(NSArray *)dataArray{
     [self.cellDataSource removeAllObjects];
     for(int i=0;i<dataArray.count;i++){
-        if([dataArray[i] isKindOfClass:[NSDictionary class]]){
+        if(uexLVCL_check_if_not_dictionary(dataArray[i])){
             [self addCellData:dataArray[i]];
         }
     }
@@ -134,46 +134,79 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
 
 -(void)addCellData:(NSDictionary *)dataInfo{
     __kindof CMLBaseViewModel *leftModel,*centerModel,*rightModel;
-    centerModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataCenter byKey:@"center"];
+    
+    CMLTableViewCellData *cellData=[[CMLTableViewCellData alloc]init];
+    [self cellData:cellData fetchModelFromXML:uexListViewCustomLayoutXMLDataCenter withInfo:dataInfo];
+
     switch (self.swipeType) {
         case uexListViewCustomLayoutSwipeTypeNone:{
             
             break;
         }
-        case uexListViewCustomLayoutSwipeTypeBothLeft:{
+        case uexListViewCustomLayoutSwipeTypeBothLeftAndRight:{
+            leftModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataLeft byKey:@"left"];
+            [cellData setLeftSliderModel:leftModel];
+            [cellData setDefaultLeftSettings:<#(NSDictionary *)#>]
+            rightModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataRight byKey:@"right"];
             break;
         }
         case uexListViewCustomLayoutSwipeTypeOnlyLeft:{
+            leftModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataLeft byKey:@"left"];
             break;
         }
         case uexListViewCustomLayoutSwipeTypeOnlyRight:{
+            rightModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataRight byKey:@"right"];
             break;
         }
 
     }
-    //CMLTableViewCellData *cellData=[CMLTableViewCellData alloc]initWithCenterModel:[CeriXMLLayout modelWithXMLData:[self.]] leftSliderModel:<#(__kindof CMLContainerModel *)#> rightSliderModel:<#(__kindof CMLContainerModel *)#>
+
 }
 
 
--(__kindof CMLBaseViewModel *)fetchModelFromXML:(uexListViewCustomLayoutXMLDataSource)datasource byKey:(NSString *)key{
-    NSDictionary<NSString *,ONOXMLDocument *> *target=nil;
+-(void)cellData:(CMLTableViewCellData *)cellData fetchModelFromXML:(uexListViewCustomLayoutXMLDataSource)datasource withInfo:(NSDictionary *)info{
+    if(uexLVCL_check_if_not_dictionary(info)){
+        return;
+    }
+
+    NSString *key=nil;
     switch (datasource) {
         case uexListViewCustomLayoutXMLDataLeft:{
-            target=self.leftXMLDictionary;
+            key=@"left";
             break;
         }
         case uexListViewCustomLayoutXMLDataRight:{
-            target=self.rightXMLDictionary;
+            key=@"right";
             break;
         }
         case uexListViewCustomLayoutXMLDataCenter:{
-            target=self.centerXMLDictionary;
+            key=@"center";
         }
 
     }
-    ONOXMLDocument *doc=[target objectForKey:key];
-    if(doc){
-        return [CeriXMLLayout modelWithXMLData:doc.rootElement];
+
+    NSDictionary *dataDict=info[key];
+    if(uexLVCL_check_if_not_dictionary(dataDict)){
+        return;
+    }
+    NSString *type=[dataDict[@"type"] CML_toString];
+    if(!type||type.length==0){
+        return;
+    }
+    NSDictionary *xmlDict=[self valueForKeyPath:[NSString stringWithFormat:@"%@XMLDictionary",key]];
+    if(uexLVCL_check_if_not_dictionary(xmlDict)){
+        return;
+    }
+    ONOXMLDocument *doc= xmlDict[type];
+    if([cellData valueForKeyPath:[NSString stringWithFormat:@"%@SliderModel",key]]){
+        [cellData setValue:[CeriXMLLayout modelWithXMLData:doc.rootElement] forKeyPath:[NSString stringWithFormat:@"%@SliderModel",key]];
+    }else{
+        cellData.centerViewModel=[CeriXMLLayout modelWithXMLData:doc.rootElement];
+    }
+
+    
+    if(dataDict[@"elementData"]&&[dataDict[@"elementData"] isKindOfClass:[NSArray class]]){
+        [cellData setValue:dataDict[@"elementData"] forKeyPath:[NSString stringWithFormat:@"%@DefaultSettings",key]];
     }
 }
 

@@ -14,9 +14,7 @@
 #import "uexListViewCustomLayoutModel.h"
 #import <MJRefresh/MJRefresh.h>
 
-#define to_string(x) #x
-#define to_nsstring(x) [NSString stringWithCString:to_string(x) encoding:NSUTF8StringEncoding]
-#define fetch_cgfloat_necessarily(x) CGFloat x =([info objectForKey:to_nsstring(x)]?[info[to_nsstring(x)] floatValue]:(isSuccess=NO,1))
+#define fetch_cgfloat_necessarily(x) CGFloat x =([info objectForKey:CML_TO_NSSTRING(x)]?[info[CML_TO_NSSTRING(x)] floatValue]:(isSuccess=NO,1))
 
 
 typedef NS_ENUM(NSInteger,uexListViewCustomLayoutRefreshStatus) {
@@ -69,7 +67,7 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
         return;
     }
     id info = [inArguments[0] JSONValue];
-    if(!info || ![info isKindOfClass:[NSDictionary class]]){
+    if(uexLVCL_check_if_not_dictionary(info)){
         return;
     }
 

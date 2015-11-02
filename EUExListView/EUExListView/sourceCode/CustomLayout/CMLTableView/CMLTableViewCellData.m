@@ -9,9 +9,9 @@
 #import "CMLTableViewCellData.h"
 
 @implementation CMLTableViewCellData
-- (instancetype)initWithCenterModel:(__kindof CMLContainerModel *)centerViewModel
-                    leftSliderModel:(__kindof CMLContainerModel *)leftSliderModel
-                   rightSliderModel:(__kindof CMLContainerModel *)rightSliderModel
+
+
+- (instancetype)init
 {
     self = [super init];
     if (self) {

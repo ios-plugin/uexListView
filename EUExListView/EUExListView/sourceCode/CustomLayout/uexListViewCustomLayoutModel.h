@@ -14,7 +14,7 @@
 
 @class EUExListView;
 
-
+#define uexLVCL_check_if_not_dictionary(x)   ( (!x) || (![x isKindOfClass:[NSDictionary class]]))
 
 @interface uexListViewCustomLayoutModel : NSObject
 
@@ -33,7 +33,7 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutSwipeType) {
     uexListViewCustomLayoutSwipeTypeOnlyRight=0,
     uexListViewCustomLayoutSwipeTypeOnlyLeft,
     uexListViewCustomLayoutSwipeTypeNone,
-    uexListViewCustomLayoutSwipeTypeBothLeft,
+    uexListViewCustomLayoutSwipeTypeBothLeftAndRight,
 };
  
 

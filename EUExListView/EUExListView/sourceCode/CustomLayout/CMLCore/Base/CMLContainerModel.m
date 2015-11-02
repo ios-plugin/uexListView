@@ -43,6 +43,8 @@
             __kindof CMLBaseViewModel *model =[CeriXMLLayout modelWithXMLData:xmlChildren[i]];
             if(model){
                 [self.childrenModels addObject:model];
+
+                
             }
 
         }

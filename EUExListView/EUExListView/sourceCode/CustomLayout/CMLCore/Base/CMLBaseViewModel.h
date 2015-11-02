@@ -6,7 +6,7 @@
 //  Copyright © 2015年 Vheissu. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+
 #import "CMLAlignmentInfo.h"
 #import "CMLEdgeDifference.h"
 #import "CMLElementRelation.h"
@@ -50,4 +50,5 @@ typedef NS_ENUM(NSInteger,CMLViewModelType) {
 
 
 -(BOOL)updateValues:(id)values;
+
 @end
