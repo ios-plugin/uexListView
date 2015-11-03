@@ -21,7 +21,7 @@
 
 @property (nonatomic,strong)CMLTableViewCellData *cellData;
 
-@property (nonatomic,strong)__kindof CMLBaseContainer *leftSliderViewController,*rightSliderViewController;
+@property (nonatomic,strong)__kindof CMLBaseContainer *leftSliderViewController,*rightSliderViewController,*centerViewController;
 @property (nonatomic,strong)UIView *leftContentView,*rightContentView;
 @property (nonatomic,strong)CMLCellScrollView *contentScrollView;
 @property (nonatomic,strong)UITapGestureRecognizer *tapGestureRecognizer;
@@ -62,13 +62,14 @@
     [self setTableView:tableView];
     
     
+    
 
 
 
 }
 
 -(void)setTableView:(__kindof UITableView *)tableView{
-    self.tableView=tableView;
+    _tableView=tableView;
     if(_tableView){
         _tableView.directionalLockEnabled=YES;
         [self.tapGestureRecognizer requireGestureRecognizerToFail:_tableView.panGestureRecognizer];
@@ -99,6 +100,9 @@
         make.right.equalTo(self.contentScrollView.mas_left).with.offset(self.cellData.leftSliderOffset);
         make.top.equalTo(self.contentScrollView.mas_top);
         make.bottom.equalTo(self.contentScrollView.mas_bottom);
+        if(self.cellData.leftSliderWidth >0){
+            make.height.equalTo(@(self.cellData.leftSliderWidth));
+        }
     }];
     self.leftSliderViewController=[CeriXMLLayout CMLRootViewControllerWithModel:self.cellData.leftSliderModel delegate:self];
     [self.leftContentView addSubview:self.leftSliderViewController.view];
@@ -109,6 +113,7 @@
         make.bottom.equalTo(self.leftContentView.mas_bottom);
         make.width.lessThanOrEqualTo(self.contentScrollView.mas_width).with.offset(kCMLTableViewCellSliderWidthDefaultOffset);
     }];
+    [self.leftSliderViewController updateValuesByInfoArray:self.cellData.leftDefaultSettings];
 }
 
 -(void)setupRightSlider{
@@ -123,6 +128,9 @@
         make.left.equalTo(self.contentScrollView.mas_right).with.offset(self.cellData.rightSliderOffset);
         make.top.equalTo(self.contentScrollView.mas_top);
         make.bottom.equalTo(self.contentScrollView.mas_bottom);
+        if(self.cellData.rightSliderWidth >0){
+            make.height.equalTo(@(self.cellData.rightSliderWidth));
+        }
     }];
     self.rightSliderViewController=[CeriXMLLayout CMLRootViewControllerWithModel:self.cellData.rightSliderModel delegate:self];
     [self.rightContentView addSubview:self.rightSliderViewController.view];
@@ -133,12 +141,14 @@
         make.bottom.equalTo(self.rightContentView.mas_bottom);
         make.width.lessThanOrEqualTo(self.contentScrollView.mas_width).with.offset(kCMLTableViewCellSliderWidthDefaultOffset);
     }];
+    [self.rightSliderViewController updateValuesByInfoArray:self.cellData.rightDefaultSettings];
 }
 
 -(void)setupContentScrollView{
+    self.translatesAutoresizingMaskIntoConstraints=NO;
+    
     self.contentScrollView = [[CMLCellScrollView alloc] init];
     self.contentScrollView.translatesAutoresizingMaskIntoConstraints = NO;
-    
     self.contentScrollView.showsHorizontalScrollIndicator = NO;
     self.contentScrollView.scrollsToTop = NO;
     self.contentScrollView.scrollEnabled = YES;
@@ -151,13 +161,18 @@
         [_contentScrollView addSubview:subview];
     }
     @weakify(self);
-    [_contentScrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        @strongify(self);
-        make.edges.equalTo(self);
-    }];
+
     [self setupScrollViewDelegate];
     self.contentScrollView.delegate = nil;//这一行不能删！
     self.contentScrollView.delegate = self;
+    self.centerViewController=[CeriXMLLayout CMLRootViewControllerWithModel:self.cellData.centerViewModel delegate:self];
+    [self.contentScrollView addSubview:self.centerViewController.view];
+    [_contentScrollView mas_updateConstraints:^(MASConstraintMaker *make) {
+        @strongify(self);
+        make.edges.equalTo(self);
+        make.edges.equalTo(self.centerViewController.view);
+    }];
+    
 
     
 }

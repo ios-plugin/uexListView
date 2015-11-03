@@ -34,5 +34,5 @@
 -(void)handleSingleClickEvent:(__kindof CMLBaseViewController *)viewController;
 
 
-
+-(void)updateValuesByInfoArray:(NSArray *)infoArray;
 @end

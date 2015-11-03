@@ -10,9 +10,11 @@
 #import "EUtility.h"
 #import "PullTableView.h"
 #import "SDImageCache.h"
+#import "uexListViewCustomLayout.h"
 #import "CeriXMLLayout.h"
 
 @interface EUExListView()<CeriXMLLayoutDelegate>
+@property (nonatomic,strong)uexListViewCustomLayout *customLayout;
 
 @end
 @implementation EUExListView{
@@ -23,6 +25,7 @@
 -(id)initWithBrwView:(EBrowserView *)eInBrwView {
     if (self = [super initWithBrwView:eInBrwView]) {
         currentStatus = NO;
+        self.customLayout=[[uexListViewCustomLayout alloc]initWithEuexListView:self];
     }
     return self;
 }
@@ -303,23 +306,6 @@
 
 
 
--(void)test:(NSMutableArray *)inArguments{
-    ONOXMLDocument *rootDocument=[ONOXMLDocument XMLDocumentWithString:[NSString stringWithContentsOfFile:[self absPath:@"res://testCustomLayout.xml"] encoding:NSUTF8StringEncoding error:NULL] encoding:NSUTF8StringEncoding error:NULL];
-    if(!rootDocument){
-        return;
-    }
-    CMLBaseViewModel *rootModel=[CeriXMLLayout modelWithXMLData:rootDocument.rootElement];
-    __kindof CMLBaseContainer * CMLRoot=[CeriXMLLayout CMLRootViewControllerWithModel:rootModel delegate:self];
-    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, 200, 300 ,200)];
-    [bgView setBackgroundColor:[UIColor redColor]];
-    [bgView addSubview:CMLRoot.view];
-    [bgView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(CMLRoot.view);
-    }];
-
-
-    [EUtility brwView:self.meBrwView addSubview:bgView];
-}
 
 
 
@@ -574,4 +560,28 @@
      currentStatus = NO;
 }
 
+
+#pragma mark - Custom Layout
+
+-(void)test:(NSMutableArray *)inArguments{
+    ONOXMLDocument *rootDocument=[ONOXMLDocument XMLDocumentWithString:[NSString stringWithContentsOfFile:[self absPath:@"res://testCustomLayout.xml"] encoding:NSUTF8StringEncoding error:NULL] encoding:NSUTF8StringEncoding error:NULL];
+    if(!rootDocument){
+        return;
+    }
+    CMLBaseViewModel *rootModel=[CeriXMLLayout modelWithXMLData:rootDocument.rootElement];
+    __kindof CMLBaseContainer * CMLRoot=[CeriXMLLayout CMLRootViewControllerWithModel:rootModel delegate:self];
+    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, 200, 300 ,200)];
+    [bgView setBackgroundColor:[UIColor redColor]];
+    [bgView addSubview:CMLRoot.view];
+    [bgView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(CMLRoot.view);
+    }];
+    
+    
+    [EUtility brwView:self.meBrwView addSubview:bgView];
+}
+
+-(void)openCustom:(NSMutableArray *)inArguments{
+    [self.customLayout openCustom:inArguments];
+}
 @end

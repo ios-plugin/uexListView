@@ -96,6 +96,31 @@
         [self.delegate CMLViewControllerDidTriggerSingleClickEvent:viewController];
     }
 }
+-(void)updateValuesByInfoArray:(NSArray *)infoArray{
+    for(NSDictionary *info in infoArray){
+        
+        [self updateValuesWithInfo:info];
+    }
+}
+
+
+
+-(void)updateValuesWithInfo:(NSDictionary *)infoValues{
+    if(!self.isRootViewController||!infoValues ||![infoValues isKindOfClass:[NSDictionary class]]){
+        return;
+    }
+    NSMutableDictionary *info=[NSMutableDictionary dictionaryWithDictionary:infoValues];
+    if(![info objectForKey:CMLPropertyId]){
+        return;
+    }
+    __kindof CMLBaseViewController *aVC =[self.namedViewControllers objectForKey:[[info objectForKey:CMLPropertyId] CML_toString]];
+    if(!aVC){
+        return;
+    }
+    [info removeObjectForKey:CMLPropertyId];
+    [aVC.model updateValues:info];
+}
+
 -(UIView*)makeInnerView{
     UIView *innerView =[[UIView alloc]init];
     innerView.userInteractionEnabled=YES;

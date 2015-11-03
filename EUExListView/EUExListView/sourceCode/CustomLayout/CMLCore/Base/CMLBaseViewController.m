@@ -37,10 +37,12 @@
 
 
 
+
 -(void)loadView{
     UIImageView *view=[[UIImageView alloc]init];
     view.backgroundColor=[UIColor clearColor];
     view.userInteractionEnabled = YES;
+    view.translatesAutoresizingMaskIntoConstraints=NO;
     self.view=view;
 
     

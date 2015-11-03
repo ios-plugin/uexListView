@@ -13,6 +13,7 @@
 #import "EUtility.h"
 #import "uexListViewCustomLayoutModel.h"
 #import <MJRefresh/MJRefresh.h>
+#import "UITableView+FDTemplateLayoutCell.h"
 
 #define fetch_cgfloat_necessarily(x) CGFloat x =([info objectForKey:CML_TO_NSSTRING(x)]?[info[CML_TO_NSSTRING(x)] floatValue]:(isSuccess=NO,1))
 
@@ -46,7 +47,7 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
     if (self) {
         self.euexObj=euexObj;
         self.usingCustomLayout=NO;
-        self.model=[[uexListViewCustomLayoutModel alloc] init];
+        self.model=[[uexListViewCustomLayoutModel alloc] initWithEUExListView:euexObj];
 
     }
     return self;
@@ -110,6 +111,7 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
     self.tableView.dataSource=self;
     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     [self setRefresh];
+    [EUtility brwView:self.euexObj.meBrwView addSubview:self.tableView];
     return YES;
 
 }
@@ -142,21 +144,29 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
 }
 
 -(void)setRefreshHeader{
-    MJRefreshHeader *header=[MJRefreshHeader headerWithRefreshingBlock:^{
+    @weakify(self);
+    self.tableView.header=[MJRefreshHeader headerWithRefreshingBlock:^{
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            @strongify(self);
+            [self.tableView.header endRefreshing];
+        });
         
     }];
-    [RACObserve(header, state) subscribeNext:^(id x) {
+    [RACObserve(self.tableView.header, state) subscribeNext:^(id x) {
+        @strongify(self);
         MJRefreshState headerState =(MJRefreshState)[x integerValue];
+        NSLog(@"%ld",headerState);
         switch (headerState) {
-            case MJRefreshStateWillRefresh:{
-                [self refreshObject:uexListViewCustomLayoutRefreshHeader callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusRefreshing];
-                break;
-            }
             case MJRefreshStatePulling:{
                 [self refreshObject:uexListViewCustomLayoutRefreshHeader callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusBegin];
                 break;
             }
             case MJRefreshStateRefreshing:{
+                [self refreshObject:uexListViewCustomLayoutRefreshHeader callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusRefreshing];
+                break;
+            }
+            case MJRefreshStateIdle:{
                 [self refreshObject:uexListViewCustomLayoutRefreshHeader callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusFinish];
                 break;
             }
@@ -165,48 +175,74 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
             }
         }
     }];
-    self.tableView.header=header;
+
 }
 
 -(void)setRefreshFooter{
-    MJRefreshFooter *footer=[MJRefreshFooter footerWithRefreshingBlock:^{
-        
+    @weakify(self);
+    self.tableView.footer=[MJRefreshFooter footerWithRefreshingBlock:^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            @strongify(self);
+            [self.tableView.footer endRefreshing];
+        });
     }];
-    [RACObserve(footer, state) subscribeNext:^(id x) {
+    [RACObserve(self.tableView.footer, state) subscribeNext:^(id x) {
+        @strongify(self);
         MJRefreshState headerState =(MJRefreshState)[x integerValue];
         switch (headerState) {
-            case MJRefreshStateWillRefresh:{
-                [self refreshObject:uexListViewCustomLayoutRefreshFooter callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusRefreshing];
-                break;
-            }
             case MJRefreshStatePulling:{
                 [self refreshObject:uexListViewCustomLayoutRefreshFooter callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusBegin];
                 break;
             }
             case MJRefreshStateRefreshing:{
+                [self refreshObject:uexListViewCustomLayoutRefreshFooter callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusRefreshing];
+                break;
+            }
+            case MJRefreshStateIdle:{
                 [self refreshObject:uexListViewCustomLayoutRefreshFooter callbackRefreshStatus:uexListViewCustomLayoutRefreshStatusFinish];
                 break;
             }
+
             default:{
                 break;
             }
         }
     }];
-    self.tableView.footer=footer;
 
 }
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+
     return [self.model.cellDataSource count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return nil;
+    NSInteger index=indexPath.row;
+    CMLTableViewCellData *cellData=[self.model.cellDataSource objectAtIndex:index];
+    CMLTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:customLayoutTableViewCellIdentifier];
+    if(!cell){
+        cell=[[CMLTableViewCell alloc]init];
+    }
+    [cell modifyWithTableView:self.tableView data:cellData delegate:self];
+    return cell;
+    
 }
 
-#pragma mark - UITableViewDelegate
 
+
+#pragma mark - UITableViewDelegate
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    CGFloat height= [tableView fd_heightForCellWithIdentifier:customLayoutTableViewCellIdentifier
+                                             cacheByIndexPath:indexPath
+                                                configuration:^(CMLTableViewCell * cell) {
+        NSInteger index=indexPath.row;
+        CMLTableViewCellData *cellData=[self.model.cellDataSource objectAtIndex:index];
+        [cell modifyWithTableView:self.tableView data:cellData delegate:self];
+    }];
+    NSLog(@"xxxxxxxxxx%f",height);
+    return height;
+}
 
 
 
@@ -242,7 +278,23 @@ NSString  *const customLayoutTableViewCellIdentifier = @"customLayoutTableViewCe
             break;
         }
     }
+    NSLog(@"%ld~~~~%ld",obj,status);
     [self callBackJsonWithName:method object:@{@"status":@(status)}];
 }
 
+
+
+#pragma mark - CMLTableViewCell Delegate
+-(void)CMLTableViewCellDidChangeUI:(CMLTableViewCell *)cell{
+    NSIndexPath *path=[self.tableView indexPathForCell:cell];
+    if(!path){
+        return;
+    }
+    
+    [self.tableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
+    
+}
+-(void)CMLTableViewCell:(CMLTableViewCell *)cell didTriggerSingleClickEventFromCMLViewController:(__kindof CMLBaseViewController *)controller{
+    
+}
 @end

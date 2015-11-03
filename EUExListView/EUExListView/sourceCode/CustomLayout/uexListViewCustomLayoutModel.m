@@ -78,7 +78,7 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
     }
     NSArray *xmlObjectArray=[dataDict objectForKey:key];
     for(NSDictionary *xmlObject in xmlObjectArray){
-        if([xmlObject objectForKey:@"src"]||![xmlObject objectForKey:@"type"]){
+        if(![xmlObject objectForKey:@"src"]||![xmlObject objectForKey:@"type"]){
             continue;
         }
         NSError *error=nil;
@@ -123,7 +123,7 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
 -(void)resetCellDataSource:(NSArray *)dataArray{
     [self.cellDataSource removeAllObjects];
     for(int i=0;i<dataArray.count;i++){
-        if(uexLVCL_check_if_not_dictionary(dataArray[i])){
+        if(!uexLVCL_check_if_not_dictionary(dataArray[i])){
             [self addCellData:dataArray[i]];
         }
     }
@@ -133,8 +133,7 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
 
 
 -(void)addCellData:(NSDictionary *)dataInfo{
-    __kindof CMLBaseViewModel *leftModel,*centerModel,*rightModel;
-    
+
     CMLTableViewCellData *cellData=[[CMLTableViewCellData alloc]init];
     [self cellData:cellData fetchModelFromXML:uexListViewCustomLayoutXMLDataCenter withInfo:dataInfo];
 
@@ -144,22 +143,21 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
             break;
         }
         case uexListViewCustomLayoutSwipeTypeBothLeftAndRight:{
-            leftModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataLeft byKey:@"left"];
-            [cellData setLeftSliderModel:leftModel];
-            [cellData setDefaultLeftSettings:<#(NSDictionary *)#>]
-            rightModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataRight byKey:@"right"];
+            [self cellData:cellData fetchModelFromXML:uexListViewCustomLayoutXMLDataLeft withInfo:dataInfo];
+            [self cellData:cellData fetchModelFromXML:uexListViewCustomLayoutXMLDataRight withInfo:dataInfo];
             break;
         }
         case uexListViewCustomLayoutSwipeTypeOnlyLeft:{
-            leftModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataLeft byKey:@"left"];
+            [self cellData:cellData fetchModelFromXML:uexListViewCustomLayoutXMLDataLeft withInfo:dataInfo];
             break;
         }
         case uexListViewCustomLayoutSwipeTypeOnlyRight:{
-            rightModel=[self fetchModelFromXML:uexListViewCustomLayoutXMLDataRight byKey:@"right"];
+            [self cellData:cellData fetchModelFromXML:uexListViewCustomLayoutXMLDataRight withInfo:dataInfo];
             break;
         }
 
     }
+    [self.cellDataSource addObject:cellData];
 
 }
 
@@ -198,7 +196,7 @@ typedef NS_ENUM(NSInteger,uexListViewCustomLayoutXMLDataSource) {
         return;
     }
     ONOXMLDocument *doc= xmlDict[type];
-    if([cellData valueForKeyPath:[NSString stringWithFormat:@"%@SliderModel",key]]){
+    if([key isEqual:@"left"]||[key isEqual:@"right"]){
         [cellData setValue:[CeriXMLLayout modelWithXMLData:doc.rootElement] forKeyPath:[NSString stringWithFormat:@"%@SliderModel",key]];
     }else{
         cellData.centerViewModel=[CeriXMLLayout modelWithXMLData:doc.rootElement];
