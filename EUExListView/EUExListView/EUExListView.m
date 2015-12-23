@@ -417,19 +417,22 @@
     NSString *backgroundColor = [dataItemDict objectForKey:@"backgroundColor"];
     UIImage *placeholderImageView = [UIImage imageWithData:[self getImageDataByPath:placeholderImgPath]];
     
-    if (!placeholderImageView) {
-        placeholderImageView = [UIImage imageNamed:@"uexListView/icon.png"];
-    }
+
     
     if([imageViewPath hasPrefix:@"http://"]) {
-        [cell.imageView setImageWithURL:[NSURL URLWithString:imageViewPath] placeholderImage:placeholderImageView];
+        if(placeholderImageView){
+            [cell.imageView setImageWithURL:[NSURL URLWithString:imageViewPath] placeholderImage:placeholderImageView];
+        }else{
+            [cell.imageView setImageWithURL:[NSURL URLWithString:imageViewPath]];
+        }
+
         
     } else {
         UIImage *imageview = [UIImage imageWithData:[self getImageDataByPath:imageViewPath]];
         if (imageview) {
             [cell.imageView setImage:imageview];
         } else {
-            [cell.imageView setImage:placeholderImageView];
+            //[cell.imageView setImage:placeholderImageView];
         }
     }
     cell.textLabel.text = title;
