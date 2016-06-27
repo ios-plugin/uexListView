@@ -7,51 +7,69 @@
 //
 
 #import "EUExListView.h"
-#import "EUtility.h"
+
 #import "PullTableView.h"
-#import "SDImageCache.h"
-@implementation EUExListView{
-    
-    int row;
-    int statusFooterListener;
-}
--(id)initWithBrwView:(EBrowserView *)eInBrwView {
-    if (self = [super initWithBrwView:eInBrwView]) {
-        currentStatus = NO;
+#import <YYWebImage/YYWebImage.h>
+@interface EUExListView()<UITableViewDataSource,UITableViewDelegate ,SWTableViewCellDelegate,PullTableViewDelegate>
+
+
+@property (nonatomic, strong) PullTableView *tableView;
+
+@property (nonatomic, strong) NSMutableArray *dataItemsArr;
+@property (nonatomic, strong) NSArray *swipeOptionItemArr;
+@property (nonatomic, strong) NSDictionary *rightSwipeOptionItemDict;
+@property (nonatomic, strong) NSDictionary *leftSwipeOptionItemDict;
+@property (nonatomic, strong) NSArray *rightOptionBtnArr;
+@property (nonatomic, strong) NSArray *leftOptionBtnArr;
+@property (nonatomic, strong) NSDictionary *setItemsDict;
+@property (nonatomic, assign) NSInteger itemSwipeMode;
+@property (nonatomic, strong) NSDictionary *setPullRefreshHeaderDict;
+@property (nonatomic, strong) NSDictionary *setPullRefreshFooterDict;
+
+
+@end
+
+
+@implementation EUExListView
+
+
+
+- (instancetype)initWithWebViewEngine:(id<AppCanWebViewEngineObject>)engine
+{
+    self = [super initWithWebViewEngine:engine];
+    if (self) {
+        _itemSwipeMode = 0;
     }
     return self;
 }
 
+
+
+
 - (void)open:(NSMutableArray *) inArguments {
     
-    if (currentStatus) {
-        // NSLog(@"currentStatus====%d",currentStatus);
-        
-        return;
-    }
-    currentStatus = YES;
-    NSString *jsonStr = nil;
-    if (inArguments.count > 0) {
-        
-        jsonStr = [inArguments objectAtIndex:0];
-        self.frameDict = [jsonStr JSONValue];
-        
-    }else{
+    if (self.tableView) {
         return;
     }
     
-    float x = [[self.frameDict objectForKey:@"x"] floatValue];
-    float y = [[self.frameDict objectForKey:@"y"] floatValue];
-    float w = [[self.frameDict objectForKey:@"w"] floatValue];
-    float h = [[self.frameDict objectForKey:@"h"] floatValue];
-    if (w <= 0||w>[EUtility screenWidth]) {
-        w = [EUtility screenWidth];
-    }
-    if (h <= 0||h>[EUtility screenHeight]) {
-        h = [EUtility screenHeight];
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+    if (!info) {
+        return;
     }
     
-    self.tableView = [[[PullTableView alloc] initWithFrame:CGRectMake(x, y, w, h) style:UITableViewStylePlain] autorelease];
+    CGFloat x = [info[@"x"] floatValue];
+    CGFloat y = [info[@"y"] floatValue];
+    CGFloat w = [info[@"w"] floatValue];
+    CGFloat h = [info[@"h"] floatValue];
+    if (w <= 0) {
+        w = [UIScreen mainScreen].applicationFrame.size.width;
+    }
+    if (h <= 0) {
+        h = [UIScreen mainScreen].applicationFrame.size.height;
+    }
+    
+
+    self.tableView = [[PullTableView alloc] initWithFrame:CGRectMake(x, y, w, h) style:UITableViewStylePlain];
     [[NSNotificationCenter defaultCenter]addObserver:self
                                             selector:@selector(ontPullRefreshHeaderListener:)
                                                 name:@"ontPullRefreshHeaderListener"
@@ -64,7 +82,7 @@
     self.tableView.delegate =self;
     self.tableView.pullDelegate = self;
     self.tableView.tableFooterView = [[UIView alloc] init];
-     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     ///头部
     NSString *arrowStr = [self.setPullRefreshHeaderDict objectForKey:@"arrowImage"];
     NSString *arrowHeaderPath =[self absPath:arrowStr];
@@ -72,22 +90,21 @@
     
     NSString *backGroundColor = [self.setPullRefreshHeaderDict objectForKey:@"backGroundColor"];
     NSString *textColor = [self.setPullRefreshHeaderDict objectForKey:@"textColor"];
-    //float textFontSize = [[self.setPullRefreshHeaderDict objectForKey:@"textFontSize"]floatValue];
     NSString *pullRefreshNormalText = [self.setPullRefreshHeaderDict objectForKey:@"pullRefreshNormalText"];
     NSString *pullRefreshPullingText = [self.setPullRefreshHeaderDict objectForKey:@"pullRefreshPullingText"];
     NSString *pullRefreshLoadingText = [self.setPullRefreshHeaderDict objectForKey:@"pullRefreshLoadingText"];
     float isShowDate =[[self.setPullRefreshHeaderDict objectForKey:@"isShowUpdateDate"] floatValue];
-    // NSString * isShowUpdateDate = [self.setPullRefreshHeaderDict objectForKey:@"isShowUpdateDate"];
+
     NSString * isShowUpdateDate = [NSString stringWithFormat:@"%f",isShowDate];
     
     self.tableView.pullArrowImage = [UIImage imageWithData:arrowData];
     if (backGroundColor) {
-        self.tableView.pullBackgroundColor = [EUtility ColorFromString:backGroundColor];
+        self.tableView.pullBackgroundColor = [UIColor ac_ColorWithHTMLColorString:backGroundColor];
     }else{
         self.tableView.pullBackgroundColor = [UIColor whiteColor];
     }
     if (textColor) {
-        self.tableView.pullTextColor = [EUtility ColorFromString:textColor];
+        self.tableView.pullTextColor = [UIColor ac_ColorWithHTMLColorString:textColor];
     }else{
         self.tableView.pullTextColor = [UIColor blackColor];
     }
@@ -105,18 +122,18 @@
     
     NSString *backGroundColorFooter = [self.setPullRefreshFooterDict objectForKey:@"backGroundColor"];
     NSString *textColorFooter = [self.setPullRefreshFooterDict objectForKey:@"textColor"];
-    // float textFontSize = [[self.setPullRefreshHeaderDict objectForKey:@"textFontSize"]floatValue];
+
     NSString *pullRefreshNormalTextFooter = [self.setPullRefreshFooterDict objectForKey:@"pullRefreshNormalText"];
     NSString *pullRefreshPullingTextFooter = [self.setPullRefreshFooterDict objectForKey:@"pullRefreshPullingText"];
     NSString *pullRefreshLoadingTextFooter = [self.setPullRefreshFooterDict objectForKey:@"pullRefreshLoadingText"];
-    //int isShowUpdateDate = [[self.setPullRefreshHeaderDict objectForKey:@"isShowUpdateDate"] intValue];
+
     if (backGroundColorFooter) {
-        self.tableView.pullBackgroundColorLoadMore = [EUtility ColorFromString:backGroundColorFooter];
+        self.tableView.pullBackgroundColorLoadMore = [UIColor ac_ColorWithHTMLColorString:backGroundColorFooter];
     }else{
         self.tableView.pullBackgroundColorLoadMore = [UIColor whiteColor];
     }
     if (textColorFooter) {
-        self.tableView.pullTextColorLoadMore = [EUtility ColorFromString:textColorFooter];
+        self.tableView.pullTextColorLoadMore = [UIColor ac_ColorWithHTMLColorString:textColorFooter];
     }else{
         self.tableView.pullTextColorLoadMore = [UIColor blackColor];
     }
@@ -126,28 +143,23 @@
     self.tableView.pullingTextLoadMore = pullRefreshPullingTextFooter;
     self.tableView.loadingTextLoadMore = pullRefreshLoadingTextFooter;
     
-    [EUtility brwView:meBrwView addSubview:self.tableView];
+    [[self.webViewEngine webView] addSubview:self.tableView];
+
 }
 
--(void)close:(NSMutableArray *) inArguments {
-    
-    self.tableView.pullDelegate = nil;
-    self.tableView.dataSource = nil;
-    self.tableView.delegate = nil;
-    if (self.tableView) {
-        [self.tableView removeFromSuperview];
-        self.tableView = nil;
-    }
-    currentStatus = NO;
+- (void)close:(NSMutableArray *)inArguments {
+    [self clean];
+
+
 }
 
--(void)setItems:(NSMutableArray *) inArguments {
-    NSString *jsonStr = nil;
-    if ([inArguments count] > 0) {
-        jsonStr = [inArguments objectAtIndex:0];
+- (void)setItems:(NSMutableArray *)inArguments {
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+    if (!info) {
+        return;
     }
-    self.setItemsDict = [jsonStr JSONValue];
-    self.dataItemsArr = [self.setItemsDict objectForKey:@"listItems"];
+    self.setItemsDict = info;
+    self.dataItemsArr = [[self.setItemsDict objectForKey:@"listItems"] mutableCopy];
     
     self.rightSwipeOptionItemDict = [self.setItemsDict objectForKey:@"rightSwipeOptionItem"];
     self.rightOptionBtnArr = [self.rightSwipeOptionItemDict objectForKey:@"optionBtn"];
@@ -155,171 +167,133 @@
     self.leftSwipeOptionItemDict = [self.setItemsDict objectForKey:@"leftSwipeOptionItem"];
     self.leftOptionBtnArr = [self.leftSwipeOptionItemDict objectForKey:@"optionBtn"];
 }
--(void)setPullRefreshHeader:(NSMutableArray *) inArguments {
-    // [[EGORefreshTableHeaderView alloc] initWithEuexObj:self];
-    
-    NSString *jsonStr = nil;
-    if (inArguments.count > 0) {
-        jsonStr = [inArguments objectAtIndex:0];
-    }else{
+- (void)setPullRefreshHeader:(NSMutableArray *) inArguments {
+
+
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+    if (!info) {
         return;
     }
-    
-    self.setPullRefreshHeaderDict = [[jsonStr JSONValue] objectForKey:@"PullRefreshHeaderStyle"];
+    self.setPullRefreshHeaderDict = [info objectForKey:@"PullRefreshHeaderStyle"];
 }
--(void)setPullRefreshFooter:(NSMutableArray *) inArguments {
-    NSString *jsonStr = nil;
-    if (inArguments.count > 0) {
-        
-        jsonStr = [inArguments objectAtIndex:0];
-        
-    }else{
+- (void)setPullRefreshFooter:(NSMutableArray *) inArguments {
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+    if (!info) {
         return;
     }
-    
-    self.setPullRefreshFooterDict = [[jsonStr JSONValue] objectForKey:@"PullRefreshFooterStyle"];
+    self.setPullRefreshFooterDict = [info objectForKey:@"PullRefreshFooterStyle"];
 }
 
 
--(void)setItemSwipeType:(NSMutableArray *) inArguments {
-    
-    self.setItemSwipeEnabled = 0;
-    
-    if (inArguments.count > 0&&[inArguments isKindOfClass:[NSMutableArray class]]) {
-        
-        self.setItemSwipeEnabled = [[inArguments objectAtIndex:0] intValue];
-        
-    }
-    else{
-        return;
-    }
+- (void)setItemSwipeType:(NSMutableArray *) inArguments {
+    ACArgsUnpack(NSNumber *swipeNum) = inArguments;
+    self.itemSwipeMode = [swipeNum integerValue];
+
 }
 
 //加载
--(void)appendItems:(NSMutableArray *) inArguments {
+- (void)appendItems:(NSMutableArray *) inArguments {
     
-    NSString *loadMoreStr = nil;
-    
-    if (inArguments.count > 0) {
-        
-        loadMoreStr = [inArguments objectAtIndex:0];
-        
-    }else{
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+    if (!info) {
         return;
     }
-    self.loadMoreItemsArr = [[loadMoreStr JSONValue] objectForKey:@"listItems"];
+    NSArray *items = arrayArg(info[@"listItems"]);
     
-    for (NSArray *loadMoreObj in self.loadMoreItemsArr) {
+    for (NSArray *loadMoreObj in items) {
         [self.dataItemsArr insertObject:loadMoreObj atIndex:self.dataItemsArr.count];
     }
     [self.tableView reloadData];
     
 }
 //删除
--(void)deleteItemsAt:(NSMutableArray *) inArguments {
+- (void)deleteItemsAt:(NSMutableArray *) inArguments {
     
-    NSString *jsonStr = nil;
-    if (inArguments.count  > 0) {
-        jsonStr = [inArguments objectAtIndex:0];
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+
+    
+    NSArray *tmpArr = arrayArg(info[@"itemIndex"]);
+    if (!tmpArr) {
+        return;
     }
-    self.deleteItemsArr = [[jsonStr JSONValue] objectForKey:@"itemIndex"];
-    self.deleteItemsArr = [self.deleteItemsArr sortedArrayUsingSelector:@selector(compare:)];
-    for (int i=(int)self.deleteItemsArr.count-1; i >= 0; i--) {
-        //删除index
-        int l =[self.deleteItemsArr[i] intValue];
-        int m =(int)self.dataItemsArr.count-1;
-        if (l> m) {
-            return;
+    
+    NSMutableArray<NSNumber *> *indexes = [NSMutableArray array];
+    [tmpArr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSNumber *num = numberArg(obj);
+        if (num) {
+            [indexes addObject:num];
         }
-        [self.dataItemsArr removeObjectAtIndex:[self.deleteItemsArr[i] intValue]];
+    }];
+    [indexes sortUsingComparator:^NSComparisonResult(NSNumber *  _Nonnull obj1, NSNumber *  _Nonnull obj2) {
+        return [obj2 compare:obj1];
+    }];
+    [indexes enumerateObjectsUsingBlock:^(NSNumber * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSInteger line = [obj integerValue];
+        if (line >= 0 && line < self.dataItemsArr.count) {
+            [self.dataItemsArr removeObjectAtIndex:line];
+        }
+    }];
+    if (self.dataItemsArr.count == 0) {
+        [self clean];
+    }else{
+        [self.tableView reloadData];
     }
-    int m =(int)self.dataItemsArr.count;
-    if (m==0) {
-        [self close:nil];
-    }
-    [self.tableView reloadData];
+
 }
 
 //插入
--(void)insertItemAt:(NSMutableArray *) inArguments {
+- (void)insertItemAt:(NSMutableArray *) inArguments {
     
-    NSString *jsonStr = nil;
-    if (inArguments.count > 0) {
-        jsonStr = [inArguments objectAtIndex:0];
-    }
-    else{
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+    if (!info) {
         return;
     }
-    self.insertItemsDict = [jsonStr JSONValue];
     
-    NSInteger insertRow = [[self.insertItemsDict objectForKey:@"itemIndex"] integerValue];
-    self.insertItemsArr = [self.insertItemsDict objectForKey:@"listItem"];
-    int dataItemsCount = (int)self.dataItemsArr.count-1;
-    
-    if( insertRow > dataItemsCount){
-        
+    NSInteger insertRow = [info[@"itemIndex"] integerValue];
+    NSDictionary *item = dictionaryArg(info[@"listItem"]);
+    if (insertRow < 0) {
+        insertRow = 0;
+    }
+    if (insertRow >= self.dataItemsArr.count || !item) {
         return;
     }
-    [self.dataItemsArr insertObject:self.insertItemsArr atIndex:insertRow];
-    
+    [self.dataItemsArr insertObject:item atIndex:insertRow];
     [self.tableView reloadData];
 }
 //重新加载
--(void)reloadItems:(NSMutableArray *) inArguments {
-    NSString *jsonStr = nil;
-    if (inArguments.count > 0) {
-        jsonStr = [inArguments objectAtIndex:0];
-    }
-    else{
-        
+- (void)reloadItems:(NSMutableArray *) inArguments {
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+    if (!info) {
         return;
     }
     [self.dataItemsArr removeAllObjects];
-    self.dataItemsArr = [[jsonStr JSONValue] objectForKey:@"listItems"];
-    // NSLog(@"---------->>>>>>%@",self.dataItemsArr);
+    self.dataItemsArr = [[info objectForKey:@"listItems"] mutableCopy];
     [self.tableView reloadData];
 }
 //移动
--(void)moveRowAtIndexPath:(NSMutableArray *) inArguments {
-    
-    NSInteger fromRow = [[inArguments objectAtIndex:0] integerValue];
-    //    获取移动某处的位置
-    NSInteger toRow = [[inArguments objectAtIndex:1] integerValue];
-    //    从数组中读取需要移动行的数据
-    self.moveItemsStr = [self.dataItemsArr objectAtIndex:fromRow];
-    //    在数组中移动需要移动的行的数据
-    [self.dataItemsArr removeObjectAtIndex:fromRow];
-    //    把需要移动的单元格数据在数组中，移动到想要移动的数据前面
-    [self.dataItemsArr insertObject:self.moveItemsStr atIndex:toRow];
+- (void)moveRowAtIndexPath:(NSMutableArray *) inArguments {
+    ACArgsUnpack(NSNumber *from,NSNumber *to) = inArguments;
+    if (!from || !to) {
+        return;
+    }
+    [self.dataItemsArr exchangeObjectAtIndex:from.integerValue withObjectAtIndex:to.integerValue];
     [self.tableView reloadData];
-    
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 #pragma mark - Refresh and load more methods
-- (void) refreshTable
-{
-    /*
-     
-     Code to actually refresh goes .here.
-     
-     */
-    
+- (void) refreshTable{
+
     self.tableView.pullLastRefreshDate = [NSDate date];
-    [self jsSuccessWithName:@"uexListView.ontPullRefreshHeaderListener" opId:1 dataType:1 intData:1];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.ontPullRefreshHeaderListener" arguments:ACArgsPack(@1,@1,@1)];
+
     self.tableView.pullTableIsRefreshing = NO;
 }
 
-- (void) loadMoreDataToTable
-{
-    /*
-     
-     Code to actually load more data goes here.
-     
-     */
-    [self jsSuccessWithName:@"uexListView.ontPullRefreshFooterListener" opId:1 dataType:1 intData:1];
+- (void) loadMoreDataToTable{
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.ontPullRefreshFooterListener" arguments:ACArgsPack(@1,@1,@1)];
     self.tableView.pullTableIsLoadingMore = NO;
     
 }
@@ -348,7 +322,7 @@
             NSString *title = [[self.leftOptionBtnArr objectAtIndex:i]objectForKey:@"text"];
             float titleSize = [[[self.leftOptionBtnArr objectAtIndex:i]objectForKey:@"textSize"] floatValue];
             
-            [leftUtilityButtons addUtilityButtonWithColor:[EUtility ColorFromString:colorStr] title:title titleSize:[UIFont fontWithName:nil size:titleSize] bgColor:[EUtility ColorFromString:bgColorStr]];
+            [leftUtilityButtons addUtilityButtonWithColor:[UIColor ac_ColorWithHTMLColorString:colorStr] title:title titleSize:[UIFont systemFontOfSize:titleSize] bgColor:[UIColor ac_ColorWithHTMLColorString:bgColorStr]];
         }
         
         for (int i = (int)self.rightOptionBtnArr.count-1; i >= 0; i--) {
@@ -358,9 +332,9 @@
             NSString *title = [[self.rightOptionBtnArr objectAtIndex:i]objectForKey:@"text"];
             float titleSize = [[[self.rightOptionBtnArr objectAtIndex:i]objectForKey:@"textSize"] floatValue];
             
-            [rightUtilityButtons addUtilityButtonWithColor:[EUtility ColorFromString:colorStr] title:title titleSize:[UIFont fontWithName:nil size:titleSize] bgColor:[EUtility ColorFromString:bgColorStr]];
+            [rightUtilityButtons addUtilityButtonWithColor:[UIColor ac_ColorWithHTMLColorString:colorStr] title:title titleSize:[UIFont systemFontOfSize:titleSize] bgColor:[UIColor ac_ColorWithHTMLColorString:bgColorStr]];
         }
-        if (self.setItemSwipeEnabled == 1) {
+        if (self.itemSwipeMode == 1) {
             cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                           reuseIdentifier:cellIdentifier
                                       containingTableView:self.tableView
@@ -368,35 +342,32 @@
                                       rightUtilityButtons:rightUtilityButtons];
             
         }
-        else if (self.setItemSwipeEnabled ==2) {
+        else if (self.itemSwipeMode ==2) {
             cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                           reuseIdentifier:cellIdentifier
-                                      containingTableView:self.tableView                                         leftUtilityButtons:leftUtilityButtons
+                                      containingTableView:self.tableView
+                                       leftUtilityButtons:leftUtilityButtons
                                       rightUtilityButtons:rightUtilityButtons];
         }
-        else if (self.setItemSwipeEnabled == 3) {
+        else if (self.itemSwipeMode == 3) {
             cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                           reuseIdentifier:cellIdentifier
                                       containingTableView:self.tableView
                                        leftUtilityButtons:nil
                                       rightUtilityButtons:nil] ;
-        }
-        else{
-            
+        }else{
             cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                           reuseIdentifier:cellIdentifier
                                       containingTableView:self.tableView
                                        leftUtilityButtons:leftUtilityButtons
                                       rightUtilityButtons:nil];
-
-            
         }
         cell.delegate = self;
         UIView *view = [[UIView alloc] initWithFrame:cell.contentView.frame];
         NSString *selectedBackgroundColor = [dataItemDict objectForKey:@"selectedBackgroundColor"];
-        [view setBackgroundColor:[EUtility ColorFromString:selectedBackgroundColor]];
+        [view setBackgroundColor:[UIColor ac_ColorWithHTMLColorString:selectedBackgroundColor]];
         cell.selectedBackgroundView = view;
-        [view release];
+
     }
     NSString *imageViewPath = [dataItemDict objectForKey:@"image"];
     NSString *placeholderImgPath = [dataItemDict objectForKey:@"placeholderImg"];
@@ -415,36 +386,32 @@
     
     
     NSString *backgroundColor = [dataItemDict objectForKey:@"backgroundColor"];
-    UIImage *placeholderImageView = [UIImage imageWithData:[self getImageDataByPath:placeholderImgPath]];
+    UIImage *placeholderImage = [UIImage imageWithData:[self getImageDataByPath:placeholderImgPath]];
     
 
     
     if([imageViewPath hasPrefix:@"http://"]) {
-        if(placeholderImageView){
-            [cell.imageView setImageWithURL:[NSURL URLWithString:imageViewPath] placeholderImage:placeholderImageView];
-        }else{
-            [cell.imageView setImageWithURL:[NSURL URLWithString:imageViewPath]];
-        }
+        [cell.imageView yy_setImageWithURL:[NSURL URLWithString:imageViewPath] placeholder:placeholderImage];
+
 
         
     } else {
         UIImage *imageview = [UIImage imageWithData:[self getImageDataByPath:imageViewPath]];
         if (imageview) {
             [cell.imageView setImage:imageview];
-        } else {
-            //[cell.imageView setImage:placeholderImageView];
         }
     }
     cell.textLabel.text = title;
     cell.textLabel.numberOfLines = -1;
     cell.detailTextLabel.text = subtitle;
     cell.detailTextLabel.numberOfLines = -1;
-    [cell.textLabel setTextColor:[EUtility ColorFromString:titleColor]];
-    [cell.detailTextLabel setTextColor:[EUtility ColorFromString:subtitleColor]];
-    [cell.textLabel.text sizeWithFont:[UIFont fontWithName:nil size:titleSize]];
-    [cell.detailTextLabel.text sizeWithFont:[UIFont fontWithName:nil size:subtitleSize]];
-    [cell SWSetBackgroundColor:[EUtility ColorFromString:backgroundColor]];
-    self.tableView.backgroundColor = [EUtility ColorFromString:backgroundColor];
+    [cell.textLabel setTextColor:[UIColor ac_ColorWithHTMLColorString:titleColor]];
+    [cell.detailTextLabel setTextColor:[UIColor ac_ColorWithHTMLColorString:subtitleColor]];
+    [cell.textLabel.text sizeWithFont:[UIFont systemFontOfSize:titleSize]];
+
+    [cell.detailTextLabel.text sizeWithFont:[UIFont systemFontOfSize:subtitleSize]];
+    [cell SWSetBackgroundColor:[UIColor ac_ColorWithHTMLColorString:backgroundColor]];
+    self.tableView.backgroundColor = [UIColor ac_ColorWithHTMLColorString:backgroundColor];
     return cell;
 }
 
@@ -464,18 +431,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"cell" object:self];
-    row =(int)indexPath.row;
-    [self performSelector:@selector(onClickItem) withObject:self afterDelay:0.1];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.onItemClick" arguments:ACArgsPack(@(indexPath.row))];
+
 }
 
--(void)onClickItem{
-    
-    //[self jsSuccessWithName:@"uexListView.onItemClick" opId:0 dataType:2 intData:row];
-    
-    NSString *jsString = [NSString stringWithFormat:@"uexListView.onItemClick(\"%d\");",row];
-    [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
-    
-}
+
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -492,20 +452,13 @@
 #pragma mark - SWTableViewDelegate
 
 - (void)swippableTableViewCell:(SWTableViewCell *)cell didTriggerLeftUtilityButtonWithIndex:(NSInteger)index {
-    
     NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
-    NSString *jsString = [NSString stringWithFormat:@"uexListView.onLeftOptionButtonInItem(\"%d\",\"%d\");",cellIndexPath.row,index];
-    
-    [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
-    
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.onLeftOptionButtonInItem" arguments:ACArgsPack(@(cellIndexPath.row),@(index))];
 }
 
 - (void)swippableTableViewCell:(SWTableViewCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
-    
     NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
-    NSString *jsString = [NSString stringWithFormat:@"uexListView.onRightOptionButtonInItem(\"%d\",\"%d\");",cellIndexPath.row,index];
-    
-    [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.onRightOptionButtonInItem" arguments:ACArgsPack(@(cellIndexPath.row),@(index))];
 }
 
 #pragma mark - PullTableViewDelegate
@@ -520,34 +473,44 @@
     [self performSelector:@selector(loadMoreDataToTable) withObject:nil afterDelay:2.0f];
 }
 
--(void)ontPullRefreshHeaderListener:(NSNotification*)notification{
+- (void)ontPullRefreshHeaderListener:(NSNotification*)notification{
     
     EGORefreshTableHeaderView *headerview = notification.object;
     int status = headerview.status;
-    [self jsSuccessWithName:@"uexListView.ontPullRefreshHeaderListener" opId:status dataType:status intData:status];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.ontPullRefreshHeaderListener" arguments:ACArgsPack(@(status),@(status),@(status))];
+    
+
 }
--(void)ontPullRefreshFooterListener:(NSNotification *)notification {
+- (void)ontPullRefreshFooterListener:(NSNotification *)notification {
     
     LoadMoreTableFooterView *footerview = notification.object;
-    statusFooterListener = footerview.status;
-    [self jsSuccessWithName:@"uexListView.ontPullRefreshFooterListener" opId:statusFooterListener dataType:statusFooterListener intData:statusFooterListener];
+    int status = footerview.status;
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.ontPullRefreshFooterListener" arguments:ACArgsPack(@(status),@(status),@(status))];
+
     
 }
--(void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ontPullRefreshHeaderListener" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ontPullRefreshFooterListener" object:nil];
-    [super dealloc];
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
 }
 
--(void)clean {
-    self.tableView.pullDelegate = nil;
-    self.tableView.dataSource = nil;
-    self.tableView.delegate = nil;
+- (void)clean {
     if (self.tableView) {
+        self.tableView.pullDelegate = nil;
+        self.tableView.dataSource = nil;
+        self.tableView.delegate = nil;
         [self.tableView removeFromSuperview];
         self.tableView = nil;
     }
-     currentStatus = NO;
+    self.dataItemsArr = nil;
+    self.swipeOptionItemArr = nil;
+    self.rightSwipeOptionItemDict = nil;
+    self.leftSwipeOptionItemDict = nil;
+    self.rightOptionBtnArr = nil;
+    self.leftOptionBtnArr = nil;
+    self.setItemsDict = nil;
+    self.setPullRefreshHeaderDict = nil;
+    self.setPullRefreshFooterDict = nil;
 }
 
 @end
