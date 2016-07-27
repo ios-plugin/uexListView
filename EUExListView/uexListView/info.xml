@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexListView" version="3.0.7" build="7">
-    	<info>7:添加IDE支持</info>
-        <build>6:未满全屏时去掉多余的行</build>
-        <build>5:修复关闭窗口后再次打开界面会卡死的问题</build>
-        <build>4:删除接口与Android做统一处理</build>
-        <build>3:修复调用删除接口无效的bug</build>
-        <build>2:修复加载图片大小不统一的bug</build>
-        <build>1:修复上拉加载时内容加载太快,右滑时出现红色背景的bug</build>
-        <build>0:Listview下拉列表，封装Listview扩展功能</build>
-    </plugin>
+  <plugin uexName="uexListView" version="3.0.8" build="8">
+    <info>8: IDE证书更新</info>
+    <build>7: 添加IDE支持</build>
+    <build>6: 未满全屏时去掉多余的行</build>
+    <build>5: 修复关闭窗口后再次打开界面会卡死的问题</build>
+    <build>4: 删除接口与Android做统一处理</build>
+    <build>3: 修复调用删除接口无效的bug</build>
+    <build>2: 修复加载图片大小不统一的bug</build>
+    <build>1: 修复上拉加载时内容加载太快,右滑时出现红色背景的bug</build>
+    <build>0: Listview下拉列表，封装Listview扩展功能</build>
+  </plugin>
 </uexplugins>
