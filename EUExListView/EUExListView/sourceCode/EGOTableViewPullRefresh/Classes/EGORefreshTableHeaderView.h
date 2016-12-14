@@ -26,7 +26,7 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import "EUtility.h"
+
 typedef enum{
 	//EGOOPullPulling = 0,
 	EGOOPullNormal = 0,
