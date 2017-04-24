@@ -453,12 +453,15 @@
 
 - (void)swippableTableViewCell:(SWTableViewCell *)cell didTriggerLeftUtilityButtonWithIndex:(NSInteger)index {
     NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
-    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.onLeftOptionButtonInItem" arguments:ACArgsPack(@(cellIndexPath.row),@(index))];
+    
+    NSString *identifier = self.leftOptionBtnArr[self.leftOptionBtnArr.count - index - 1][@"btnIndex"] ?: @(index).stringValue;
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.onLeftOptionButtonInItem" arguments:ACArgsPack(@(cellIndexPath.row), identifier)];
 }
 
 - (void)swippableTableViewCell:(SWTableViewCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
     NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
-    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.onRightOptionButtonInItem" arguments:ACArgsPack(@(cellIndexPath.row),@(index))];
+    NSString *identifier = self.rightOptionBtnArr[self.leftOptionBtnArr.count - index - 1][@"btnIndex"] ?: @(index).stringValue;
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexListView.onRightOptionButtonInItem" arguments:ACArgsPack(@(cellIndexPath.row), identifier)];
 }
 
 #pragma mark - PullTableViewDelegate

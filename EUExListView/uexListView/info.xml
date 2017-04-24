@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexListView" version="4.0.0" build="0">
-    	<info>0:Listview for iOS</info>
+    <plugin uexName="uexListView" version="4.0.1" build="1">
+    	<info>1: 修复侧边按钮btnIndex配置无效的问题</info>
+    	<build>0 :Listview for iOS</build>
     </plugin>
 </uexplugins>
 
